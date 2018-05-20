@@ -1,11 +1,18 @@
 package org.librehealth.fhir.analytics.cassandra;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+import com.cerner.bunsen.FhirEncoders;
 import com.datastax.driver.core.Session;
 import com.datastax.spark.connector.cql.CassandraConnector;
-import com.datastax.spark.connector.japi.CassandraJavaUtil;
+import com.datastax.spark.connector.japi.CassandraRow;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
 import org.hl7.fhir.dstu3.model.Patient;
 
 import java.io.Serializable;
@@ -14,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.datastax.spark.connector.japi.CassandraJavaUtil.javaFunctions;
-import static com.datastax.spark.connector.japi.CassandraJavaUtil.mapColumnTo;
 import static com.datastax.spark.connector.japi.CassandraJavaUtil.mapToRow;
 
 public class App implements Serializable {
@@ -192,6 +198,12 @@ public class App implements Serializable {
 		JavaSparkContext sc = new JavaSparkContext(conf);
 		CassandraConnector connector = CassandraConnector.apply(conf);
 
+		SparkSession spark = SparkSession
+				.builder()
+				.appName("Java Spark SQL basic example")
+				.config("spark.some.config.option", "some-value")
+				.getOrCreate();
+
 		try (Session session = connector.openSession()) {
 			session.execute("DROP KEYSPACE IF EXISTS simple_canary_cc");
 			session.execute("CREATE KEYSPACE simple_canary_cc WITH " +
@@ -211,20 +223,52 @@ public class App implements Serializable {
 						mapToRow(SimplePair.class))
 				.saveToCassandra();
 
-		JavaRDD<String> cassandraRdd = CassandraJavaUtil.javaFunctions(sc)
-				.cassandraTable("simple_canary_cc", "simple_pair", mapColumnTo(String.class)).select("value");
+		//JavaRDD<Patient> cassandraRdd = CassandraJavaUtil.javaFunctions(sc)
+		//		.cassandraTable("simple_canary_cc", "simple_pair", map(String.class)).select("value");
 
-		/*CassandraJavaRDD<CassandraRow> rdd = javaFunctions(sc)
-				.cassandraTable("simple_canary_cc", "simple_pair")
-				.select("key", "value");
+		JavaRDD<Patient> cassandraRDD = javaFunctions(sc).cassandraTable("simple_canary_cc", "simple_pair")
+				.map(new Function<CassandraRow, Patient>() {
+					@Override
+					public Patient call(CassandraRow cassandraRow) throws Exception {
+						FhirContext ourFhirCtx = FhirContext.forDstu3();
+						IParser parser=ourFhirCtx.newJsonParser().setPrettyPrint(true);
+						String patientSrt = cassandraRow.getString("value");
+						Patient patientOb=parser.parseResource(Patient.class, patientSrt);
+						return patientOb;
+					}
+				});
 
+		FhirEncoders encoders =
+				FhirEncoders.forStu3().getOrCreate();
+		Dataset<Patient> peopleDFq = spark.createDataset(cassandraRDD.rdd(), encoders.of(Patient.class));
 
-		long count = rdd.count();
-		System.out.format("Count: %d %n", count);
+	/*	FhirContext ourFhirCtx = FhirContext.forDstu3();
+		IParser parser=ourFhirCtx.newJsonParser().setPrettyPrint(true);
+		Patient patientOb=parser.parseResource(Patient.class, patient);
 
-		List somePairs = rdd.take(9);
-		System.out.println(somePairs);*/
+		//Encoder<Patient> personEncoder = Encoders.bean(Patient.class);
+		Dataset<Patient> javaBeanDS = spark.createDataset(
+				Collections.singletonList(patientOb),
+				encoders.of(Patient.class)
+		);
+		peopleDFq.createOrReplaceTempView("patient");
 
+		Dataset<Row> sqlDF = spark.sql("SELECT * FROM patient where gender='male'");
+		sqlDF.show();
+
+		/*JavaRDD<SimplePair> peopleRDD = spark.read()
+				.textFile("examples/src/main/resources/people.txt")
+				.javaRDD()
+				.map(line -> {
+					String[] parts = line.split(",");
+					SimplePair person = new SimplePair();rim()));
+					return person;
+				});
+
+// Apply a schema to an RDD of JavaBeans to get a DataFrame
+		Dataset<Row> peopleDF = spark.createDataFrame(peopleRDD, SimplePair.class);
+
+		Dataset<Row> peopleDFq = spark.createDataFrame(cassandraRdd, Patient.class);*/
 		sc.stop();
 
 	}
