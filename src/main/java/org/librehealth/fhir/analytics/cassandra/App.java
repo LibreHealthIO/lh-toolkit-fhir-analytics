@@ -250,7 +250,7 @@ public class App implements Serializable {
 		Dataset<Patient> javaBeanDS = spark.createDataset(
 				Collections.singletonList(patientOb),
 				encoders.of(Patient.class)
-		);
+		); */
 		peopleDFq.createOrReplaceTempView("patient");
 
 		Dataset<Row> sqlDF = spark.sql("SELECT * FROM patient where gender='male'");
