@@ -1,4 +1,4 @@
-package org.librehealth.fhir.analytics;
+package org.librehealth.fhir.analytics.service;
 
 import com.cerner.bunsen.Bundles;
 import com.cerner.bunsen.Bundles.BundleContainer;
