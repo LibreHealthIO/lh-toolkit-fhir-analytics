@@ -9,6 +9,6 @@ Pre-requisites
 
 Configure the project with Java IDE
 - Run the spring boot application class
-- Login to FHIR Analytics application using credentials admin/admin
+- Login to FHIR Analytics(http://localhost:8080) application using credentials admin/admin
 - Navigate to SQL table
 - Enter query ex: SELECT * FROM patient inner join observation where observation.subject.reference == patient.id and gender='male'
