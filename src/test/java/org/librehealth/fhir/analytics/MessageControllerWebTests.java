@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = SampleWebUiApplication.class)
+@ContextConfiguration(classes = LibreHealthFHIRAnalyticsApplication.class)
 public class MessageControllerWebTests {
 
 	@Autowired

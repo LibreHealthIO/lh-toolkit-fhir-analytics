@@ -19,6 +19,13 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 			<version>${springVersion}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+
 		<!-- Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
