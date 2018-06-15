@@ -24,14 +24,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@SpringBootApplication
-public class LibreHealthFHIRAnalyticsApplication implements WebMvcConfigurer {
+@SpringBootApplication(exclude = {CassandraAutoConfiguration.class})
+public class LibreHealthFHIRAnalyticsApplication extends SpringBootServletInitializer implements WebMvcConfigurer {
 	private static final Logger logger = LoggerFactory.getLogger(LibreHealthFHIRAnalyticsApplication.class);
 
 	@Override
@@ -54,7 +57,18 @@ public class LibreHealthFHIRAnalyticsApplication implements WebMvcConfigurer {
 	}
 
 	public static void main(String[] args) {
+		logger.info("Running My Application");
 		SpringApplication.run(LibreHealthFHIRAnalyticsApplication.class, args);
+		init();
+	}
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		init();
+		return application.sources(LibreHealthFHIRAnalyticsApplication.class);
+	}
+
+	private static void init() {
 		LibreHealthFHIRAnalyticsExecutionManager manager = LibreHealthFHIRAnalyticsExecutionManager.getInstance();
 		CassandraDataStoreService cassandraDataStoreService = new CassandraDataStoreServiceImpl();
 		Session session = manager.getCassandraConnector().openSession();
@@ -66,5 +80,4 @@ public class LibreHealthFHIRAnalyticsApplication implements WebMvcConfigurer {
 		}
 		cassandraDataStoreService.preloadData(manager.getJavaSparkContext(), manager.getSparkSession());
 	}
-
 }

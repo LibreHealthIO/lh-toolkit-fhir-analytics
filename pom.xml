@@ -6,6 +6,7 @@
 	<name>FHIR SPARK Analytics Application</name>
 	<description>Built using Bunsen FHIR Analytics library for analyse FHIR Data</description>
 	<groupId>org.librehealth.analytics</groupId>
+	<packaging>war</packaging>
 	<version>1.0.0-SNAPSHOT</version>
 	<dependencies>
 		<!-- Compile -->
@@ -13,6 +14,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${springVersion}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -35,6 +42,14 @@
 		</dependency>
 
 		<dependency>
+			<!-- To build an executable war use one of the profiles below -->
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>com.cerner.bunsen</groupId>
 			<artifactId>bunsen-core</artifactId>
 			<version>${bunsen.version}</version>
@@ -53,6 +68,20 @@
 			<groupId>org.apache.spark</groupId>
 			<artifactId>spark-core_${scala.binary.version}</artifactId>
 			<version>${spark.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
@@ -98,7 +127,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>15.0</version>
+			<version>17.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.datastax.spark</groupId>
@@ -107,15 +136,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.datastax.spark</groupId>
-			<artifactId>spark-cassandra-connector-java_2.11</artifactId>
-			<version>1.5.2</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.datastax.cassandra</groupId>
 			<artifactId>cassandra-driver-core</artifactId>
-			<version>2.1.4</version>
+			<version>3.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -129,6 +152,26 @@
 					<groupId>org.apache.thrift</groupId>
 					<artifactId>libthrift</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-common</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-codec</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-buffer</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-handler</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-transport</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -138,13 +181,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-streaming_2.10</artifactId>
-			<version>1.1.1</version>
+			<artifactId>spark-streaming_2.11</artifactId>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-streaming-kinesis-asl_2.10</artifactId>
-			<version>1.1.1</version>
+			<artifactId>spark-streaming-kinesis-asl_2.11</artifactId>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
@@ -161,12 +204,44 @@
 			<artifactId>scala-reflect</artifactId>
 			<version>2.11.8</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-scala_2.11</artifactId>
+			<version>2.9.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -175,8 +250,35 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- Build an executable JAR -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>org.librehealth.fhir.analytics.LibreHealthFHIRAnalyticsApplication</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
 
 	<properties>
 		<compile.source>1.8</compile.source>
@@ -188,11 +290,12 @@
 		<parquet.version>1.7.0</parquet.version>
 		<hapi.fhir.version>3.3.0</hapi.fhir.version>
 		<junit.version>4.11</junit.version>
-		<jackson.version>2.9.5</jackson.version>
+		<jackson.version>2.6.5</jackson.version>
 		<maven-javadoc.plugin.version>2.10.3</maven-javadoc.plugin.version>
 		<maven-project-info-reports.plugin.version>2.9</maven-project-info-reports.plugin.version>
 		<hapiFhirStructuresDstuVersion>3.3.0</hapiFhirStructuresDstuVersion>
 		<hapiFhirBaseVersion>3.3.0</hapiFhirBaseVersion>
 		<springVersion>2.0.1.RELEASE</springVersion>
+		<start-class>org.librehealth.fhir.analytics.LibreHealthFHIRAnalyticsApplication</start-class>
 	</properties>
 </project>

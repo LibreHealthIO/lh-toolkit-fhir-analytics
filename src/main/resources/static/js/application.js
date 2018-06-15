@@ -11,7 +11,7 @@ $(document).ready(function () {
         var sql = $('#sparksql').val();
         var json = {query: sql};
         $.ajax({
-            url: '/sql',
+            url: 'sql',
             data: JSON.stringify(json),
             type: "POST",
             beforeSend: function (xhr) {
