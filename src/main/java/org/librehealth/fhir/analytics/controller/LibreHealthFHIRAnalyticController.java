@@ -5,6 +5,8 @@ import org.librehealth.fhir.analytics.LibreHealthFHIRAnalyticsExecutionManager;
 import org.librehealth.fhir.analytics.exception.LibreHealthFHIRAnalyticsException;
 import org.librehealth.fhir.analytics.model.SparkSQLQuery;
 import org.librehealth.fhir.analytics.utils.LibrehealthAnalyticsUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,17 +17,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Controller
 public class LibreHealthFHIRAnalyticController {
+    private static final Logger logger = LoggerFactory.getLogger(LibreHealthFHIRAnalyticController.class);
 
     @GetMapping("/")
     public String home(Map<String, Object> model) {
-        model.put("message", "Hello World");
-        model.put("title", "Hello Home");
-        model.put("date", new Date());
         return "home";
     }
 
@@ -34,18 +34,17 @@ public class LibreHealthFHIRAnalyticController {
         String data = "";
         try {
             LibreHealthFHIRAnalyticsExecutionManager manager = LibreHealthFHIRAnalyticsExecutionManager.getInstance();
+            List<String> views = LibrehealthAnalyticsUtils.containsViews(queryDetails.getQuery());
+            LibrehealthAnalyticsUtils.loadDataByViews(views.toArray(new String[views.size()]),
+                                                            manager.getJavaSparkContext(), manager.getSparkSession());
             data = LibrehealthAnalyticsUtils.executeSql(queryDetails.getQuery(), manager.getSparkSession());
         } catch (LibreHealthFHIRAnalyticsException e) {
-            e.printStackTrace();
+            logger.error("Error while executing spark SQL", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error("Error while parsing JSON", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity(data, new HttpHeaders(), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/sql", method = RequestMethod.GET)
-    public ResponseEntity<?> executeSQLGet() {
-
-        return new ResponseEntity("Successfully login", new HttpHeaders(), HttpStatus.OK);
     }
 }

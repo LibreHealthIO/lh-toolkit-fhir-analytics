@@ -93,5 +93,31 @@
         </tbody>
     </table>
 </script>
+<script id="patient-search-template" type="text/x-handlebars-template">
+    <div id="patient-demo-graphics">
+        <table class="table">
+            <tr>
+                <td>Gender</td>
+                <td id="patient-gender"></td>
+            </tr>
+        </table>
+    </div>
+    <table class="table">
+        <thead class="thead-dark">
+        {{#each columns}}
+        <th>{{this}}</th><!--property name here-->
+        {{/each}}
+        </thead>
+        <tbody>
+        {{#each data}}
+        <tr>
+            {{#each this}}
+            <td>{{this}}</td><!--property value here-->
+            {{/each}}
+        </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</script>
 </body>
 </html>

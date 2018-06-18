@@ -17,8 +17,8 @@
 package org.librehealth.fhir.analytics;
 
 import com.datastax.driver.core.Session;
-import org.librehealth.fhir.analytics.cassandra.CassandraDataStoreService;
-import org.librehealth.fhir.analytics.cassandra.CassandraDataStoreServiceImpl;
+import org.librehealth.fhir.analytics.cassandra.CassandraDataService;
+import org.librehealth.fhir.analytics.cassandra.CassandraDataServiceImpl;
 import org.librehealth.fhir.analytics.exception.LibreHealthFHIRAnalyticsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@SpringBootApplication(exclude = {CassandraAutoConfiguration.class})
+@SpringBootApplication
 public class LibreHealthFHIRAnalyticsApplication extends SpringBootServletInitializer implements WebMvcConfigurer {
 	private static final Logger logger = LoggerFactory.getLogger(LibreHealthFHIRAnalyticsApplication.class);
 
@@ -70,14 +70,12 @@ public class LibreHealthFHIRAnalyticsApplication extends SpringBootServletInitia
 
 	private static void init() {
 		LibreHealthFHIRAnalyticsExecutionManager manager = LibreHealthFHIRAnalyticsExecutionManager.getInstance();
-		CassandraDataStoreService cassandraDataStoreService = new CassandraDataStoreServiceImpl();
+		CassandraDataService cassandraDataStoreService = CassandraDataServiceImpl.getInstance();
 		Session session = manager.getCassandraConnector().openSession();
-		cassandraDataStoreService.init(session);
 		try {
-			cassandraDataStoreService.insertSampleData(session);
+			cassandraDataStoreService.insertDemoData(session);
 		} catch (LibreHealthFHIRAnalyticsException e) {
 			logger.error("Error while loading data to cassandra", e);
 		}
-		cassandraDataStoreService.preloadData(manager.getJavaSparkContext(), manager.getSparkSession());
 	}
 }
