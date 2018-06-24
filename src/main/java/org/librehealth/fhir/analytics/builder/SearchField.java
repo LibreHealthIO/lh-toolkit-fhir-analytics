@@ -5,6 +5,8 @@ public class SearchField {
     private String column;
     private String table;
     private String operator;
+    private String type;
+    private boolean contains;
 
     public String getValue() {
         return value;
@@ -36,5 +38,21 @@ public class SearchField {
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean isContains() {
+        return contains;
+    }
+
+    public void setContains(boolean contains) {
+        this.contains = contains;
     }
 }

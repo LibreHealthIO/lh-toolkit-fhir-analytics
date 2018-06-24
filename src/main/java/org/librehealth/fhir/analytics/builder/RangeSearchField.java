@@ -6,6 +6,7 @@ public class RangeSearchField {
     private String column;
     private String table;
     private String operator;
+    private String type;
 
     public String getValueEnd() {
         return valueEnd;
@@ -45,5 +46,13 @@ public class RangeSearchField {
 
     public void setValueStart(String valueStart) {
         this.valueStart = valueStart;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

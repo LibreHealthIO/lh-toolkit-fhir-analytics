@@ -63,3 +63,12 @@ body {
     margin-right: 5px;
     margin-bottom: 5px !important;
 }
+
+.form-group {
+    margin-right:6px;
+}
+
+.sub-heading {
+    float: right;
+    margin-right:50px;
+}

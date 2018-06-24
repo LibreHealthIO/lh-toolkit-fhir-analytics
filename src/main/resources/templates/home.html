@@ -35,17 +35,25 @@
 <div class="container">
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" href="#conceptandobservation" role="tab"
-               data-toggle="tab">Concept/Observation</a>
+            <a class="nav-link" href="#patientattribute" onclick="load('patient')" role="tab" data-toggle="tab">Patient
+                Attribute</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#patientattribute" role="tab" data-toggle="tab">Patient Attribute</a>
+            <a class="nav-link" href="#observation" onclick="load('observation')" role="tab" data-toggle="tab">Observation</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#encounter" role="tab" data-toggle="tab">Encounter</a>
+            <a class="nav-link" href="#encounter" onclick="load('encounter')" role="tab" data-toggle="tab">Encounter</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#composition" role="tab" data-toggle="tab">Composition</a>
+            <a class="nav-link" href="#medication-request" onclick="load('medication-request')" role="tab"
+               data-toggle="tab">Medication Request</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#practitioner" onclick="load('practitioner')" role="tab" data-toggle="tab">Practitioner</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#diagnostic-report" onclick="load('diagnostic-report')" role="tab"
+               data-toggle="tab">Diagnostic Report</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#sql" role="tab" data-toggle="tab">SQL</a>
@@ -55,22 +63,36 @@
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane fade in active" id="conceptandobservation">...</div>
-        <div role="tabpanel" class="tab-pane fade" id="patientattribute">bbb</div>
-        <div role="tabpanel" class="tab-pane fade" id="encounter">ccc</div>
-        <div role="tabpanel" class="tab-pane fade" id="composition">ccc</div>
+        <div role="tabpanel" class="tab-pane fade" id="patientattribute">
+            <div class="container">
+                <div id="patientattribute-content"></div>
+            </div>
+
+            <button style="float: right;" class="btn btn-outline-success my-2 my-sm-0 btn-primary-spacing"
+                    id="patient-search">Search
+            </button>
+
+            <div class="container">
+                <div id="patient-results"></div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="observation"></div>
+        <div role="tabpanel" class="tab-pane fade" id="encounter"></div>
+        <div role="tabpanel" class="tab-pane fade" id="medication-request"></div>
+        <div role="tabpanel" class="tab-pane fade" id="practitioner"></div>
+        <div role="tabpanel" class="tab-pane fade" id="diagnostic-report"></div>
         <div role="tabpanel" class="tab-pane fade" id="sql">
             <div class="container">
                 <div class="form-group">
                     <label for="sparksql">Spark SQL Query</label>
                     <textarea class="form-control" id="sparksql" rows="3"></textarea>
-                    <button style="float: right;" class="btn btn-outline-success my-2 my-sm-0 btn-primary-spacing" id="sparksqlbtn">Submit
+                    <button style="float: right;" class="btn btn-outline-success my-2 my-sm-0 btn-primary-spacing"
+                            id="sparksqlbtn">Submit
                     </button>
                 </div>
             </div>
             <div class="container">
-                <div id="results">
-
-                </div>
+                <div id="results"></div>
             </div>
         </div>
     </div>
@@ -94,30 +116,290 @@
     </table>
 </script>
 <script id="patient-search-template" type="text/x-handlebars-template">
-    <div id="patient-demo-graphics">
-        <table class="table">
-            <tr>
-                <td>Gender</td>
-                <td id="patient-gender"></td>
-            </tr>
-        </table>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#patient-demographics">Patient Demographics</a>
+                </h4>
+            </div>
+            <div id="patient-demographics" class="panel-collapse collapse show">
+                <div class="panel-body">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">ID</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-id" type="text" name="patient-id" value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-id-contains" type="checkbox"
+                                                      name="patient-id-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-id-combined" type="checkbox"
+                                                      name="patient-id-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Identifier</label>
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Id</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-identifier-id" type="text" name="patient-identifier-id"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-id-contains" type="checkbox"
+                                                      name="patient-identifier-id-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-id-combined" type="checkbox"
+                                                      name="patient-identifier-id-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Use</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-identifier-use" type="text"
+                                               name="patient-identifier-use"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-use-contains" type="checkbox"
+                                                      name="patient-identifier-use-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-use-combined" type="checkbox"
+                                                      name="patient-identifier-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Value</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-identifier-value" type="text"
+                                               name="patient-identifier-value"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-value-contains" type="checkbox"
+                                                      name="patient-identifier-value-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-value-combined" type="checkbox"
+                                                      name="patient-identifier-value-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-identifier-system" type="text"
+                                               name="patient-identifier-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-system-contains" type="checkbox"
+                                                      name="patient-identifier-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-system-combined" type="checkbox"
+                                                      name="patient-identifier-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Name</label>
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Id</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-name-id" type="text" name="patient-name-id"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-contains" type="checkbox"
+                                                      name="patient-name-id-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-identifier-combined" type="checkbox"
+                                                      name="patient-name-id-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Use</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-name-use" type="text" name="patient-name-use"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-name-use-contains" type="checkbox"
+                                                      name="patient-name-use-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-name-use-combined" type="checkbox"
+                                                      name="patient-name-use-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Family</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-name-family" type="text" name="patient-name-family"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-name-family-contains" type="checkbox"
+                                                      name="patient-name-family-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-name-family-combined" type="checkbox"
+                                                      name="patient-name-family-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Given</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-name-given" type="text" name="patient-name-given"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-name-given-contains" type="checkbox"
+                                                      name="patient-name-family-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-name-given-combined" type="checkbox"
+                                                      name="patient-name-given-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Active</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group col-xs-6">
+                                    <input id="patient-active" type="checkbox"
+                                                  name="patient-active" checked>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">BirthDay</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-bday" type="text" name="patient-bday" value="">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#collapse1">Patient Details</a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <table class="table">
+                        <tr>
+                            <td>Telecom</td>
+                            <td>
+                                <input id="patient-telecom" type="text" name="patient-telecom" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Deceased</td>
+                            <td>
+                                <input id="patient-deceased" type="text" name="patient-deceased" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Address</td>
+                            <td>
+                                <input id="patient-address" type="text" name="patient-address" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Martial Status</td>
+                            <td>
+                                <input id="patient-mstatus" type="text" name="patient-mstatus" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Contact</td>
+                            <td>
+                                <input id="patient-contact" type="text" name="patient-contact" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>General Practitioner</td>
+                            <td>
+                                <input id="patient-gpractitioner" type="text" name="patient-gpractitioner" value="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Managing Organization</td>
+                            <td>
+                                <input id="patient-morganization" type="text" name="patient-morganization" value="">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <table class="table">
-        <thead class="thead-dark">
-        {{#each columns}}
-        <th>{{this}}</th><!--property name here-->
-        {{/each}}
-        </thead>
-        <tbody>
-        {{#each data}}
-        <tr>
-            {{#each this}}
-            <td>{{this}}</td><!--property value here-->
-            {{/each}}
-        </tr>
-        {{/each}}
-        </tbody>
-    </table>
 </script>
 </body>
 </html>

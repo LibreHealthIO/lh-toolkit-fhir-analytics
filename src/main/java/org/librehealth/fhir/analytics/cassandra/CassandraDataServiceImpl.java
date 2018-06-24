@@ -196,6 +196,7 @@ public class CassandraDataServiceImpl implements CassandraDataService {
         FhirEncoders encoders = FhirEncoders.forStu3().getOrCreate();
         Dataset<Patient> peopleDFq = sparkSession.createDataset(patientRDD.rdd(), encoders.of(Patient.class));
         peopleDFq.createOrReplaceTempView(LibreHealthAnalyticConstants.PATIENT);
+        peopleDFq.printSchema();
     }
 
     public void loadHealthcareServices(JavaSparkContext sc, SparkSession sparkSession) {
