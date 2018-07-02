@@ -5,9 +5,11 @@
     <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="/css/bootstrap.min.css"/>
     <link rel="stylesheet" th:href="@{/css/common.css}" href="/css/common.css"/>
+    <link rel="stylesheet" th:href="@{/css/jquery-ui.css}" href="/css/jquery-ui.css"/>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/application.js"></script>
     <script type="text/javascript" src="js/handlebars.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/application.js"></script>
 </head>
 <body>
 <div class="container">
@@ -49,9 +51,6 @@
                data-toggle="tab">Medication Request</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#practitioner" onclick="load('practitioner')" role="tab" data-toggle="tab">Practitioner</a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" href="#diagnostic-report" onclick="load('diagnostic-report')" role="tab"
                data-toggle="tab">Diagnostic Report</a>
         </li>
@@ -62,7 +61,6 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane fade in active" id="conceptandobservation">...</div>
         <div role="tabpanel" class="tab-pane fade" id="patientattribute">
             <div class="container">
                 <div id="patientattribute-content"></div>
@@ -76,11 +74,58 @@
                 <div id="patient-results"></div>
             </div>
         </div>
-        <div role="tabpanel" class="tab-pane fade" id="observation"></div>
-        <div role="tabpanel" class="tab-pane fade" id="encounter"></div>
-        <div role="tabpanel" class="tab-pane fade" id="medication-request"></div>
-        <div role="tabpanel" class="tab-pane fade" id="practitioner"></div>
-        <div role="tabpanel" class="tab-pane fade" id="diagnostic-report"></div>
+        <div role="tabpanel" class="tab-pane fade" id="observation">
+            <div class="container">
+                <div id="observation-content"></div>
+            </div>
+
+            <button style="float: right;" class="btn btn-outline-success my-2 my-sm-0 btn-primary-spacing"
+                    id="observation-search">Search
+            </button>
+
+            <div class="container">
+                <div id="observation-results"></div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="encounter">
+            <div class="container">
+                <div id="encounter-content"></div>
+            </div>
+
+            <button style="float: right;" class="btn btn-outline-success my-2 my-sm-0 btn-primary-spacing"
+                    id="encounter-search">Search
+            </button>
+
+            <div class="container">
+                <div id="encounter-results"></div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="medication-request">
+            <div class="container">
+                <div id="medication-request-content"></div>
+            </div>
+
+            <button style="float: right;" class="btn btn-outline-success my-2 my-sm-0 btn-primary-spacing"
+                    id="medication-request-search">Search
+            </button>
+
+            <div class="container">
+                <div id="medication-request-results"></div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="diagnostic-report">
+            <div class="container">
+                <div id="diagnostic-report-content"></div>
+            </div>
+
+            <button style="float: right;" class="btn btn-outline-success my-2 my-sm-0 btn-primary-spacing"
+                    id="diagnostic-report-search">Search
+            </button>
+
+            <div class="container">
+                <div id="diagnostic-report-results"></div>
+            </div>
+        </div>
         <div role="tabpanel" class="tab-pane fade" id="sql">
             <div class="container">
                 <div class="form-group">
@@ -114,6 +159,1203 @@
         {{/each}}
         </tbody>
     </table>
+</script>
+<script id="encounter-search-template" type="text/x-handlebars-template">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#encounter-overview">Search Encounters</a>
+                </h4>
+            </div>
+            <div id="encounter-overview" class="panel-collapse collapse show">
+                <div class="panel-body">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">ID</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-id" type="text" name="encounter-id" value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-id-contains" type="checkbox"
+                                                      name="encounter-id-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-id-combined" type="checkbox"
+                                                      name="encounter-id-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Identifier</label>
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Id</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-identifier-id" type="text" name="encounter-identifier-id"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-identifier-id-contains" type="checkbox"
+                                                      name="encounter-identifier-id-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-identifier-id-combined" type="checkbox"
+                                                      name="encounter-identifier-id-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Use</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-identifier-use" type="text"
+                                               name="encounter-identifier-use"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-identifier-use-contains" type="checkbox"
+                                                      name="encounter-identifier-use-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-identifier-use-combined" type="checkbox"
+                                                      name="encounter-identifier-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Value</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-identifier-value" type="text"
+                                               name="encounter-identifier-value"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-identifier-value-contains" type="checkbox"
+                                                      name="encounter-identifier-value-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-identifier-value-combined" type="checkbox"
+                                                      name="encounter-identifier-value-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-identifier-system" type="text"
+                                               name="encounter-identifier-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-identifier-system-contains" type="checkbox"
+                                                      name="encounter-identifier-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-identifier-system-combined" type="checkbox"
+                                                      name="encounter-identifier-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Class</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-class-code" type="text"
+                                               name="encounter-class-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-class-code-contains"
+                                                      type="checkbox"
+                                                      name="encounter-class-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-class-code-combined"
+                                                      type="checkbox"
+                                                      name="encounter-class-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-class-system" type="text"
+                                               name="encounter-class-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-class-system-contains"
+                                                      type="checkbox"
+                                                      name="encounter-class-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-class-system-combined"
+                                                      type="checkbox"
+                                                      name="encounter-class-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Type</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-type-code" type="text"
+                                               name="encounter-type-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-type-code-contains"
+                                                      type="checkbox"
+                                                      name="encounter-type-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-type-code-combined"
+                                                      type="checkbox"
+                                                      name="encounter-type-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-type-system" type="text"
+                                               name="encounter-type-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-type-system-contains"
+                                                      type="checkbox"
+                                                      name="encounter-type-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-type-system-combined"
+                                                      type="checkbox"
+                                                      name="encounter-type-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Priority</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-priority-code" type="text"
+                                               name="encounter-type-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-priority-code-contains"
+                                                      type="checkbox"
+                                                      name="encounter-priority-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-priority-code-combined"
+                                                      type="checkbox"
+                                                      name="encounter-priority-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-priority-system" type="text"
+                                               name="encounter-priority-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-priority-system-contains"
+                                                      type="checkbox"
+                                                      name="encounter-priority-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-priority-system-combined"
+                                                      type="checkbox"
+                                                      name="encounter-priority-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Subject</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-subject-reference" type="text"
+                                               name="encounter-subject-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-subject-reference-contains"
+                                                      type="checkbox"
+                                                      name="encounter-subject-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-subject-reference-combined"
+                                                      type="checkbox"
+                                                      name="encounter-subject-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Appointment</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-appointment-reference" type="text"
+                                               name="encounter-appointment-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-appointment-reference-contains"
+                                                      type="checkbox"
+                                                      name="encounter-appointment-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-appointment-reference-combined"
+                                                      type="checkbox"
+                                                      name="encounter-appointment-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Length</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-length" type="text" name="encounter-id" value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-length-combined" type="checkbox"
+                                                      name="encounter-length-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Reason</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-reason-code" type="text"
+                                               name="encounter-reason-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-reason-code-contains"
+                                                      type="checkbox"
+                                                      name="encounter-reason-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-reason-code-combined"
+                                                      type="checkbox"
+                                                      name="encounter-reason-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-reason-system" type="text"
+                                               name="encounter-reason-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-reason-system-contains"
+                                                      type="checkbox"
+                                                      name="encounter-reason-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-reason-system-combined"
+                                                      type="checkbox"
+                                                      name="encounter-reason-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Diagnosis</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Condition reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-diagnosis-condition-reference" type="text"
+                                               name="encounter-diagnosis-condition-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-diagnosis-condition-reference-contains"
+                                                      type="checkbox"
+                                                      name="encounter-diagnosis-condition-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-diagnosis-condition-reference-combined"
+                                                      type="checkbox"
+                                                      name="encounter-diagnosis-condition-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Role code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-diagnosis-condition-role-code" type="text"
+                                               name="encounter-diagnosis-condition-role-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-diagnosis-condition-role-code-contains"
+                                                      type="checkbox"
+                                                      name="encounter-diagnosis-condition-role-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-diagnosis-condition-role-code-combined"
+                                                      type="checkbox"
+                                                      name="encounter-diagnosis-condition-role-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Role System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-diagnosis-condition-role-system" type="text"
+                                               name="encounter-diagnosis-condition-role-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-diagnosis-condition-role-system-contains"
+                                                      type="checkbox"
+                                                      name="encounter-diagnosis-condition-role-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-diagnosis-condition-role-system-combined"
+                                                      type="checkbox"
+                                                      name="encounter-diagnosis-condition-role-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Location</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-location-reference" type="text"
+                                               name="encounter-location-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-location-reference-contains"
+                                                      type="checkbox"
+                                                      name="encounter-location-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-location-reference-combined"
+                                                      type="checkbox"
+                                                      name="encounter-location-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Service Provider</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="encounter-serviceprovider-reference" type="text"
+                                               name="encounter-serviceprovider-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-serviceprovider-reference-contains"
+                                                      type="checkbox"
+                                                      name="encounter-serviceprovider-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="encounter-serviceprovider-reference-combined"
+                                                      type="checkbox"
+                                                      name="encounter-serviceprovider-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="observation-search-template" type="text/x-handlebars-template">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#observation-overview">Search Observations</a>
+                </h4>
+            </div>
+            <div id="observation-overview" class="panel-collapse collapse show">
+                <div class="panel-body">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">ID</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-id" type="text" name="observation-id" value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-id-contains" type="checkbox"
+                                                      name="observation-id-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-id-combined" type="checkbox"
+                                                      name="observation-id-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Identifier</label>
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Id</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-identifier-id" type="text" name="observation-identifier-id"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-identifier-id-contains" type="checkbox"
+                                                      name="observation-identifier-id-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-identifier-id-combined" type="checkbox"
+                                                      name="observation-identifier-id-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Use</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-identifier-use" type="text"
+                                               name="observation-identifier-use"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-identifier-use-contains" type="checkbox"
+                                                      name="observation-identifier-use-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-identifier-use-combined" type="checkbox"
+                                                      name="observation-identifier-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Value</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-identifier-value" type="text"
+                                               name="observation-identifier-value"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-identifier-value-contains" type="checkbox"
+                                                      name="observation-identifier-value-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-identifier-value-combined" type="checkbox"
+                                                      name="observation-identifier-value-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-identifier-system" type="text"
+                                               name="observation-identifier-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-identifier-system-contains" type="checkbox"
+                                                      name="observation-identifier-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-identifier-system-combined" type="checkbox"
+                                                      name="observation-identifier-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BasedOn</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-basedon-reference" type="text"
+                                               name="observation-basedon-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-basedon-reference-contains"
+                                                      type="checkbox"
+                                                      name="observation-basedon-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-basedon-reference-combined"
+                                                      type="checkbox"
+                                                      name="observation-basedon-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>
+                                <select id="observation-status" class="selectpicker">
+                                    <option value="registered">registered</option>
+                                    <option value="preliminary">preliminary</option>
+                                    <option value="final">final</option>
+                                    <option value="amended">amended</option>
+                                    <option value="corrected">corrected</option>
+                                    <option value="cancelled">cancelled</option>
+                                    <option value="entered-in-error">entered-in-error</option>
+                                    <option value="unknown">unknown</option>
+                                </select>
+
+                                <div class="form-group col-xs-6">
+                                    <label><input id="observation-status-combined" type="checkbox"
+                                                  name="patient-gender-combined">Individual</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-category-code" type="text"
+                                               name="observation-category-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-category-code-contains"
+                                                      type="checkbox"
+                                                      name="observation-category-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-category-code-combined"
+                                                      type="checkbox"
+                                                      name="observation-category-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-category-system" type="text"
+                                               name="observation-category-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-category-system-contains"
+                                                      type="checkbox"
+                                                      name="observation-category-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-category-system-combined"
+                                                      type="checkbox"
+                                                      name="observation-category-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Type</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-type-code" type="text"
+                                               name="observation-type-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-type-code-contains"
+                                                      type="checkbox"
+                                                      name="observation-type-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-type-code-combined"
+                                                      type="checkbox"
+                                                      name="observation-type-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-type-system" type="text"
+                                               name="observation-category-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-type-system-contains"
+                                                      type="checkbox"
+                                                      name="observation-type-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-type-system-combined"
+                                                      type="checkbox"
+                                                      name="observation-type-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Subject</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-subject-reference" type="text"
+                                               name="observation-subject-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-subject-reference-contains"
+                                                      type="checkbox"
+                                                      name="observation-subject-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-subject-reference-combined"
+                                                      type="checkbox"
+                                                      name="observation-subject-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Context</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-context-reference" type="text"
+                                               name="observation-context-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-context-reference-contains"
+                                                      type="checkbox"
+                                                      name="observation-context-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-context-reference-combined"
+                                                      type="checkbox"
+                                                      name="observation-context-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Performer</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-performer-reference" type="text"
+                                               name="observation-performer-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-performer-reference-contains"
+                                                      type="checkbox"
+                                                      name="observation-performer-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-performer-reference-combined"
+                                                      type="checkbox"
+                                                      name="observation-performer-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Value Codeable Concept</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-value-codeable-code" type="text"
+                                               name="observation-value-codeable-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-value-codeable-code-contains"
+                                                      type="checkbox"
+                                                      name="observation-value-codeable-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-value-codeable-code-combined"
+                                                      type="checkbox"
+                                                      name="observation-value-codeable-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-value-codeable-system" type="text"
+                                               name="observation-value-codeable-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-value-codeable-system-contains"
+                                                      type="checkbox"
+                                                      name="observation-value-codeable-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-value-codeable-system-combined"
+                                                      type="checkbox"
+                                                      name="observation-value-codeable-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Value Boolean</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group col-xs-6">
+                                    <input id="observation-value-boolean" type="checkbox"
+                                           name="observation-value-boolean" checked>
+                                </div>
+                                <div class="form-group col-xs-6">
+                                    <label><input id="observation-value-boolean-combined" type="checkbox"
+                                                  name="observation-value-boolean-combined">Individual</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Value Quantity</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-value-quantity" type="text" name="observation-value-quantity" value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-value-quantity-combined" type="checkbox"
+                                                      name="observation-value-quantity-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Value Quantity Range</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Low</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-value-quantity-range-low" type="text"
+                                               name="observation-value-quantity-range-low"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-value-quantity-range-low-combined"
+                                                      type="checkbox"
+                                                      name="observation-value-quantity-range-low-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>High</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-value-quantity-range-high" type="text"
+                                               name="observation-value-quantity-range-high"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-value-quantity-range-high-combined"
+                                                      type="checkbox"
+                                                      name="observation-value-quantity-range-high-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Body Site</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-bodysite-code" type="text"
+                                               name="observation-bodysite-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-bodysite-code-contains"
+                                                      type="checkbox"
+                                                      name="observation-bodysite-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-bodysite-code-combined"
+                                                      type="checkbox"
+                                                      name="observation-bodysite-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-bodysite-system" type="text"
+                                               name="observation-bodysite-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-bodysite-system-contains"
+                                                      type="checkbox"
+                                                      name="observation-bodysite-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-bodysite-system-combined"
+                                                      type="checkbox"
+                                                      name="observation-bodysite-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Method</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-method-code" type="text"
+                                               name="observation-method-code"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-method-code-contains"
+                                                      type="checkbox"
+                                                      name="observation-method-code-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-method-code-combined"
+                                                      type="checkbox"
+                                                      name="observation-method-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-method-system" type="text"
+                                               name="observation-method-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-method-system-contains"
+                                                      type="checkbox"
+                                                      name="observation-method-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-method-system-combined"
+                                                      type="checkbox"
+                                                      name="observation-method-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Specimen</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-specimen-reference" type="text"
+                                               name="observation-specimen-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-specimen-reference-contains"
+                                                      type="checkbox"
+                                                      name="observation-specimen-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-specimen-reference-combined"
+                                                      type="checkbox"
+                                                      name="observation-specimen-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Device</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-device-reference" type="text"
+                                               name="observation-device-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-device-reference-contains"
+                                                      type="checkbox"
+                                                      name="observation-device-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-device-reference-combined"
+                                                      type="checkbox"
+                                                      name="observation-device-reference-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Reference Range</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Low</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-reference-range-low" type="text"
+                                               name="observation-reference-range-low"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-reference-range-low-combined"
+                                                      type="checkbox"
+                                                      name="observation-reference-range-low-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>High</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="observation-reference-range-high" type="text"
+                                               name="observation-reference-range-high"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="observation-reference-range-high-combined"
+                                                      type="checkbox"
+                                                      name="observation-reference-range-high-combined">Individual</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
 </script>
 <script id="patient-search-template" type="text/x-handlebars-template">
     <div class="panel-group">
@@ -322,20 +1564,33 @@
                             <td>
                                 <div class="form-group col-xs-6">
                                     <input id="patient-active" type="checkbox"
-                                                  name="patient-active" checked>
+                                           name="patient-active" checked>
+                                </div>
+                                <div class="form-group col-xs-6">
+                                    <label><input id="patient-active-combined" type="checkbox"
+                                                  name="patient-active-combined">Individual</label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <div class="form-group row">
-                                    <label class="col-2 col-form-label">BirthDay</label>
+                                    <label class="col-2 col-form-label">Birth Day</label>
                                 </div>
                             </td>
                             <td>
                                 <div class="row">
                                     <div class="form-group col-xs-6">
-                                        <input id="patient-bday" type="text" name="patient-bday" value="">
+                                        <div class='input-group date'>
+                                            <input id="patient-bday" type="text" name="patient-bday" value="">
+                                            <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                        <div class="form-group col-xs-6">
+                                            <label><input id="patient-bday-combined" type="checkbox"
+                                                          name="patient-bday-combined">Individual</label>
+                                        </div>
                                     </div>
                                 </div>
                             </td>
@@ -355,44 +1610,304 @@
                     <table class="table">
                         <tr>
                             <td>Telecom</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
                             <td>
-                                <input id="patient-telecom" type="text" name="patient-telecom" value="">
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Use</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-telecom-use" type="text" name="patient-telecom-use"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-telecom-use-contains" type="checkbox"
+                                                      name="patient-telecom-use-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-telecom-use-combined" type="checkbox"
+                                                      name="patient-telecom-use-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-telecom-system" type="text" name="patient-telecom-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-telecom-system-contains" type="checkbox"
+                                                      name="patient-telecom-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-telecom-system-combined" type="checkbox"
+                                                      name="patient-telecom-system-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Value</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-telecom-value" type="text" name="patient-telecom-value"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-telecom-value-contains" type="checkbox"
+                                                      name="patient-telecom-value-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-telecom-value-combined" type="checkbox"
+                                                      name="patient-telecom-value-combined">Individual</label>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
-                            <td>Deceased</td>
+                            <td>Gender</td>
                             <td>
-                                <input id="patient-deceased" type="text" name="patient-deceased" value="">
+                                <select id="patient-gender" class="selectpicker">
+                                    <option value="male">male</option>
+                                    <option value="female">female</option>
+                                    <option value="unknown">unknown</option>
+                                    <option value="other">other</option>
+                                </select>
+
+                                <div class="form-group col-xs-6">
+                                    <label><input id="patient-gender-combined" type="checkbox"
+                                                  name="patient-gender-combined">Individual</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label">Deceased</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group col-xs-6">
+                                    <input id="patient-deceased" type="checkbox"
+                                           name="patient-deceased" checked>
+                                </div>
+                                <div class="form-group col-xs-6">
+                                    <label><input id="patient-deceased-combined" type="checkbox"
+                                                  name="patient-deceased-combined">Individual</label>
+                                </div>
                             </td>
                         </tr>
                         <tr>
                             <td>Address</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
                             <td>
-                                <input id="patient-address" type="text" name="patient-address" value="">
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Use</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-address-use" type="text" name="patient-address-use"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-use-contains" type="checkbox"
+                                                      name="patient-address-use-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-use-combined" type="checkbox"
+                                                      name="patient-address-use-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Line</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-address-line" type="text" name="patient-address-line"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-line-contains" type="checkbox"
+                                                      name="patient-address-line-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-line-combined" type="checkbox"
+                                                      name="patient-address-line-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>City</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-address-city" type="text" name="patient-address-city"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-city-contains" type="checkbox"
+                                                      name="patient-address-city-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-city-combined" type="checkbox"
+                                                      name="patient-address-city-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>District</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-address-district" type="text" name="patient-address-district"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-district-contains" type="checkbox"
+                                                      name="patient-address-district-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-district-combined" type="checkbox"
+                                                      name="patient-address-district-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>State</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-address-state" type="text" name="patient-address-state"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-state-contains" type="checkbox"
+                                                      name="patient-address-state-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-state-combined" type="checkbox"
+                                                      name="patient-address-state-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Postal Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-address-postalcode" type="text"
+                                               name="patient-address-postalcode"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-postalcode-contains" type="checkbox"
+                                                      name="patient-address-postalcode-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-postalcode-combined" type="checkbox"
+                                                      name="patient-address-postalcode-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Country</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-address-country" type="text" name="patient-address-country"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-country-contains" type="checkbox"
+                                                      name="patient-address-country-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-address-country-combined" type="checkbox"
+                                                      name="patient-address-country-combined">Individual</label>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
                             <td>Martial Status</td>
-                            <td>
-                                <input id="patient-mstatus" type="text" name="patient-mstatus" value="">
-                            </td>
+                            <td></td>
                         </tr>
                         <tr>
-                            <td>Contact</td>
+                            <td></td>
                             <td>
-                                <input id="patient-contact" type="text" name="patient-contact" value="">
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Code</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <select id="patient-martialstatus-code" class="selectpicker">
+                                            <option value="A">Annulled</option>
+                                            <option value="D">Divorced</option>
+                                            <option value="I">Interlocutory</option>
+                                            <option value="L">Legally Separated</option>
+                                            <option value="M">Married</option>
+                                            <option value="P">Polygamous</option>
+                                            <option value="S">Never Married</option>
+                                            <option value="T">Domestic partner</option>
+                                            <option value="U">unmarried</option>
+                                            <option value="W">Widowed</option>
+                                            <option value="UNK">unknown</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-martialstatus-code-combined" type="checkbox"
+                                                      name="patient-martialstatus-code-combined">Individual</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>System</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-martialstatus-system" type="text"
+                                               name="patient-martialstatus-system"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-martialstatus-system-contains" type="checkbox"
+                                                      name="patient-martialstatus-system-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-martialstatus-system-combined" type="checkbox"
+                                                      name="patient-martialstatus-system-combined">Individual</label>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
                             <td>General Practitioner</td>
-                            <td>
-                                <input id="patient-gpractitioner" type="text" name="patient-gpractitioner" value="">
-                            </td>
+                            <td></td>
                         </tr>
                         <tr>
-                            <td>Managing Organization</td>
+                            <td></td>
                             <td>
-                                <input id="patient-morganization" type="text" name="patient-morganization" value="">
+                                <div class="form-group row">
+                                    <div class="form-group sub-heading col-xs-6">
+                                        <label>Reference</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <input id="patient-generalpractitioner-reference" type="text"
+                                               name="patient-generalpractitioner-reference"
+                                               value="">
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-generalpractitioner-reference-contains"
+                                                      type="checkbox"
+                                                      name="patient-generalpractitioner-reference-contains">Contains</label>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label><input id="patient-generalpractitioner-reference-combined"
+                                                      type="checkbox"
+                                                      name="patient-generalpractitioner-reference-combined">Individual</label>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </table>

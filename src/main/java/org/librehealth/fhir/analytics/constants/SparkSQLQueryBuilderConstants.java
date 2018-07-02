@@ -17,6 +17,9 @@ public class SparkSQLQueryBuilderConstants {
     public static String QUERY_WHERE_CLAUSE_RANGE_STARTING_DATE_RANGE_TEMPLATE = "WHERE {0} > DATE(''{1}'') AND {2} < DATE(''{3}'') ";
     public static String QUERY_WHERE_CLAUSE_RANGE_DATE_RANGE_TEMPLATE = "{0} {1} > DATE(''{2}'') AND {3} < DATE(''{4}'') ";
 
+    public static String QUERY_WHERE_CLAUSE_RANGE_STARTING_INT_RANGE_TEMPLATE = "WHERE {0} > {1} AND {2} < {3}";
+    public static String QUERY_WHERE_CLAUSE_RANGE_INT_RANGE_TEMPLATE = "{0} {1} > {2} AND {3} < {4} ";
+
     public static String STRING = "string";
     public static String INTEGER = "int";
     public static String BOOLEAN = "bool";

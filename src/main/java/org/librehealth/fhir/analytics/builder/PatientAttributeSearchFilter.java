@@ -30,6 +30,26 @@ public class PatientAttributeSearchFilter extends BaseSearchFilter {
 
         aMap.put("patient-bday", "patient.birthDate");
 
+        aMap.put("patient-telecom-use", "patient.telecom[0].family");
+        aMap.put("patient-telecom-system", "patient.telecom[0].system");
+        aMap.put("patient-telecom-value", "patient.telecom[0].value");
+
+        aMap.put("patient-gender", "patient.gender");
+        aMap.put("patient-deceased", "patient.deceasedBoolean");
+
+
+        aMap.put("patient-address-use", "patient.address[0].use");
+        aMap.put("patient-address-line", "patient.address[0].line");
+        aMap.put("patient-address-city", "patient.address[0].city");
+        aMap.put("patient-address-district", "patient.address[0].district");
+        aMap.put("patient-address-state", "patient.address[0].state");
+        aMap.put("patient-address-postalCode", "patient.address[0].postalCode");
+        aMap.put("patient-address-country", "patient.address[0].country");
+
+        aMap.put("patient-martialstatus-code", "patient.maritalStatus.code");
+        aMap.put("patient-martialstatus-system", "patient.maritalStatus.system");
+
+        aMap.put("patient-generalpractitioner-reference", "patient.generalPractitioner[0].reference");
         mappings = Collections.unmodifiableMap(aMap);
     }
 

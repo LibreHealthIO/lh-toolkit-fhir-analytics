@@ -1,6 +1,5 @@
 package org.librehealth.fhir.analytics.builder;
 
-import org.librehealth.fhir.analytics.constants.LibreHealthAnalyticConstants;
 import org.librehealth.fhir.analytics.constants.SparkSQLQueryBuilderConstants;
 
 import java.text.MessageFormat;
@@ -82,6 +81,9 @@ public class SparkQueryBuilder {
                 if (SparkSQLQueryBuilderConstants.DATE.equalsIgnoreCase(rangeSearchField.getType())) {
                     subQuery = MessageFormat.format(
                             SparkSQLQueryBuilderConstants.QUERY_WHERE_CLAUSE_RANGE_STARTING_DATE_RANGE_TEMPLATE, params);
+                } else if (SparkSQLQueryBuilderConstants.INTEGER.equalsIgnoreCase(rangeSearchField.getType())) {
+                    subQuery = MessageFormat.format(
+                            SparkSQLQueryBuilderConstants.QUERY_WHERE_CLAUSE_RANGE_STARTING_INT_RANGE_TEMPLATE, params);
                 } else {
                     subQuery = MessageFormat.format(
                             SparkSQLQueryBuilderConstants.QUERY_WHERE_CLAUSE_RANGE_STARTING_GENERAL_TEMPLATE, params);
@@ -93,6 +95,9 @@ public class SparkQueryBuilder {
                 if (SparkSQLQueryBuilderConstants.DATE.equalsIgnoreCase(rangeSearchField.getType())) {
                     subQuery = MessageFormat.format(
                             SparkSQLQueryBuilderConstants.QUERY_WHERE_CLAUSE_RANGE_DATE_RANGE_TEMPLATE, params);
+                } else if (SparkSQLQueryBuilderConstants.INTEGER.equalsIgnoreCase(rangeSearchField.getType())) {
+                    subQuery = MessageFormat.format(
+                            SparkSQLQueryBuilderConstants.QUERY_WHERE_CLAUSE_RANGE_INT_RANGE_TEMPLATE, params);
                 } else {
                     subQuery = MessageFormat.format(SparkSQLQueryBuilderConstants.QUERY_WHERE_CLAUSE_RANGE_GENERAL_TEMPLATE, params);
                 }

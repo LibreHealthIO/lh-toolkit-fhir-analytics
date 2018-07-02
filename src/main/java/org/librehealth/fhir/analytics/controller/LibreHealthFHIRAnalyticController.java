@@ -2,6 +2,10 @@ package org.librehealth.fhir.analytics.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.librehealth.fhir.analytics.LibreHealthFHIRAnalyticsExecutionManager;
+import org.librehealth.fhir.analytics.builder.DiagnosticReportSearchFilter;
+import org.librehealth.fhir.analytics.builder.EncounterSearchFilter;
+import org.librehealth.fhir.analytics.builder.MedicationRequestSearchFilter;
+import org.librehealth.fhir.analytics.builder.ObservationSearchFilter;
 import org.librehealth.fhir.analytics.builder.PatientAttributeSearchFilter;
 import org.librehealth.fhir.analytics.builder.SparkQueryBuilder;
 import org.librehealth.fhir.analytics.exception.LibreHealthFHIRAnalyticsException;
@@ -82,36 +86,122 @@ public class LibreHealthFHIRAnalyticController {
     }
 
     @RequestMapping(value = "/observation-search", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> searchObservation(@RequestBody SparkSQLQuery queryDetails) {
+    public ResponseEntity<?> searchObservation(@RequestBody SearchObj searchObj) {
         String data = "";
+        ObservationSearchFilter observationSearchFilter = new ObservationSearchFilter();
+        observationSearchFilter.setRangeSearchFieldList(searchObj.getRangeFields());
+        observationSearchFilter.setSearchFields(searchObj.getFields());
+        observationSearchFilter.setTable(searchObj.getTableName());
+        try {
+            observationSearchFilter.processFields();
+
+            SparkQueryBuilder queryBuilder = new SparkQueryBuilder();
+            String sparkSQl = queryBuilder.setTableName(observationSearchFilter.getTable()).
+                    setFields(observationSearchFilter.getSearchFields())
+                    .setRangeFields(observationSearchFilter.getRangeSearchFieldList()).build();
+
+            LibreHealthFHIRAnalyticsExecutionManager manager = LibreHealthFHIRAnalyticsExecutionManager.getInstance();
+            List<String> views = LibrehealthAnalyticsUtils.containsViews(sparkSQl);
+            LibrehealthAnalyticsUtils.loadDataByViews(views.toArray(new String[views.size()]),
+                    manager.getJavaSparkContext(), manager.getSparkSession());
+            data = LibrehealthAnalyticsUtils.executeSql(sparkSQl, manager.getSparkSession());
+        } catch (LibreHealthFHIRAnalyticsException e) {
+            logger.error("Error while executing spark SQL", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (JsonProcessingException e) {
+            logger.error("Error while parsing JSON", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity(data, new HttpHeaders(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/encounter-search", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> searchEncounter(@RequestBody SparkSQLQuery queryDetails) {
+    public ResponseEntity<?> searchEncounter(@RequestBody SearchObj searchObj) {
         String data = "";
+        EncounterSearchFilter encounterSearchFilter = new EncounterSearchFilter();
+        encounterSearchFilter.setRangeSearchFieldList(searchObj.getRangeFields());
+        encounterSearchFilter.setSearchFields(searchObj.getFields());
+        encounterSearchFilter.setTable(searchObj.getTableName());
+        try {
+            encounterSearchFilter.processFields();
 
+            SparkQueryBuilder queryBuilder = new SparkQueryBuilder();
+            String sparkSQl = queryBuilder.setTableName(encounterSearchFilter.getTable()).
+                    setFields(encounterSearchFilter.getSearchFields())
+                    .setRangeFields(encounterSearchFilter.getRangeSearchFieldList()).build();
+
+            LibreHealthFHIRAnalyticsExecutionManager manager = LibreHealthFHIRAnalyticsExecutionManager.getInstance();
+            List<String> views = LibrehealthAnalyticsUtils.containsViews(sparkSQl);
+            LibrehealthAnalyticsUtils.loadDataByViews(views.toArray(new String[views.size()]),
+                    manager.getJavaSparkContext(), manager.getSparkSession());
+            data = LibrehealthAnalyticsUtils.executeSql(sparkSQl, manager.getSparkSession());
+        } catch (LibreHealthFHIRAnalyticsException e) {
+            logger.error("Error while executing spark SQL", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (JsonProcessingException e) {
+            logger.error("Error while parsing JSON", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity(data, new HttpHeaders(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/medication-request-search", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> searchMedicationRequest(@RequestBody SparkSQLQuery queryDetails) {
+    public ResponseEntity<?> searchMedicationRequest(@RequestBody SearchObj searchObj) {
         String data = "";
+        MedicationRequestSearchFilter medicationRequestSearchFilter = new MedicationRequestSearchFilter();
+        medicationRequestSearchFilter.setRangeSearchFieldList(searchObj.getRangeFields());
+        medicationRequestSearchFilter.setSearchFields(searchObj.getFields());
+        medicationRequestSearchFilter.setTable(searchObj.getTableName());
+        try {
+            medicationRequestSearchFilter.processFields();
 
-        return new ResponseEntity(data, new HttpHeaders(), HttpStatus.OK);
-    }
+            SparkQueryBuilder queryBuilder = new SparkQueryBuilder();
+            String sparkSQl = queryBuilder.setTableName(medicationRequestSearchFilter.getTable()).
+                    setFields(medicationRequestSearchFilter.getSearchFields())
+                    .setRangeFields(medicationRequestSearchFilter.getRangeSearchFieldList()).build();
 
-    @RequestMapping(value = "/practitioner-search", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> searchPractitioner(@RequestBody SparkSQLQuery queryDetails) {
-        String data = "";
-
+            LibreHealthFHIRAnalyticsExecutionManager manager = LibreHealthFHIRAnalyticsExecutionManager.getInstance();
+            List<String> views = LibrehealthAnalyticsUtils.containsViews(sparkSQl);
+            LibrehealthAnalyticsUtils.loadDataByViews(views.toArray(new String[views.size()]),
+                    manager.getJavaSparkContext(), manager.getSparkSession());
+            data = LibrehealthAnalyticsUtils.executeSql(sparkSQl, manager.getSparkSession());
+        } catch (LibreHealthFHIRAnalyticsException e) {
+            logger.error("Error while executing spark SQL", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (JsonProcessingException e) {
+            logger.error("Error while parsing JSON", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity(data, new HttpHeaders(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/diagnosticreport-search", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> searchDiagnosticReport(@RequestBody SparkSQLQuery queryDetails) {
+    public ResponseEntity<?> searchDiagnosticReport(@RequestBody SearchObj searchObj) {
         String data = "";
+        DiagnosticReportSearchFilter diagnosticReportSearchFilter = new DiagnosticReportSearchFilter();
+        diagnosticReportSearchFilter.setRangeSearchFieldList(searchObj.getRangeFields());
+        diagnosticReportSearchFilter.setSearchFields(searchObj.getFields());
+        diagnosticReportSearchFilter.setTable(searchObj.getTableName());
+        try {
+            diagnosticReportSearchFilter.processFields();
 
+            SparkQueryBuilder queryBuilder = new SparkQueryBuilder();
+            String sparkSQl = queryBuilder.setTableName(diagnosticReportSearchFilter.getTable()).
+                    setFields(diagnosticReportSearchFilter.getSearchFields())
+                    .setRangeFields(diagnosticReportSearchFilter.getRangeSearchFieldList()).build();
+
+            LibreHealthFHIRAnalyticsExecutionManager manager = LibreHealthFHIRAnalyticsExecutionManager.getInstance();
+            List<String> views = LibrehealthAnalyticsUtils.containsViews(sparkSQl);
+            LibrehealthAnalyticsUtils.loadDataByViews(views.toArray(new String[views.size()]),
+                    manager.getJavaSparkContext(), manager.getSparkSession());
+            data = LibrehealthAnalyticsUtils.executeSql(sparkSQl, manager.getSparkSession());
+        } catch (LibreHealthFHIRAnalyticsException e) {
+            logger.error("Error while executing spark SQL", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (JsonProcessingException e) {
+            logger.error("Error while parsing JSON", e);
+            return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity(data, new HttpHeaders(), HttpStatus.OK);
     }
 }
