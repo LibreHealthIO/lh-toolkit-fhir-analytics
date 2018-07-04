@@ -54,9 +54,6 @@ public class ObservationSearchFilter extends BaseSearchFilter {
         aMap.put("observation-specimen-reference", "observation.specimen.reference");
         aMap.put("observation-device-reference", "observation.device.reference");
 
-        aMap.put("observation-specimen-reference", "observation.specimen.reference");
-        aMap.put("observation-device-reference", "observation.device.reference");
-
         aMap.put("observation-reference-range-low", "observation.referenceRange.low.value");
         aMap.put("observation-reference-range-high", "observation.referenceRange.high.value");
 

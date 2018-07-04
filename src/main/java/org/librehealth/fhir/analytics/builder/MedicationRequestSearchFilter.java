@@ -15,39 +15,49 @@ public class MedicationRequestSearchFilter extends BaseSearchFilter {
 
     static {
         Map<String, String> aMap = new HashMap<>();
-        aMap.put("encounter-id", "encounter.id");
+        aMap.put("medication-request-id", "medicationrequest.id");
 
-        aMap.put("encounter-identifier-id", "encounter.identifier[0].id");
-        aMap.put("encounter-identifier-use", "encounter.identifier[0].use");
-        aMap.put("encounter-identifier-system", "encounter.identifier[0].system");
-        aMap.put("encounter-identifier-value", "encounter.identifier[0].value");
+        aMap.put("medication-request-identifier-id", "medicationrequest.identifier[0].id");
+        aMap.put("medication-request-identifier-use", "medicationrequest.identifier[0].use");
+        aMap.put("medication-request-identifier-system", "medicationrequest.identifier[0].system");
+        aMap.put("medication-request-identifier-value", "medicationrequest.identifier[0].value");
 
-        aMap.put("encounter-status", "encounter.status");
+        aMap.put("medication-request-definition-reference", "medicationrequest.definition.reference");
+        aMap.put("medication-request-basedon-reference", "medicationrequest.basedOn.reference");
+        aMap.put("medication-request-status", "medicationrequest.status");
 
-        aMap.put("encounter-class-code", "encounter.code.code");
-        aMap.put("encounter-class-system", "encounter.code.system");
+        aMap.put("medication-request-category-code", "medicationrequest.category.coding[0].code");
+        aMap.put("medication-request-category-system", "medicationrequest.category.coding[0].system");
 
-        aMap.put("encounter-type-code", "encounter.type.coding[0].code");
-        aMap.put("encounter-type-system", "encounter.type.coding[0].system");
+        aMap.put("medication-request-priority", "medicationrequest.priority");
 
-        aMap.put("encounter-priority-code", "encounter.priority.coding[0].code");
-        aMap.put("encounter-priority-system", "encounter.priority.coding[0].system");
+        aMap.put("medication-request-value-codeable-code", "medicationrequest.medicationCodeableConcept.coding[0].code");
+        aMap.put("medication-request-value-codeable-system", "medicationrequest.medicationCodeableConcept.coding[0].system");
 
-        aMap.put("encounter-subject-reference", "encounter.subject.reference");
-        aMap.put("encounter-appointment-reference", "encounter.appointment.reference");
+        aMap.put("medication-request-medication-reference", "medicationrequest.medicationReference.reference");
+        aMap.put("medication-request-subject-reference", "medicationrequest.subject.reference");
+        aMap.put("medication-request-context-reference", "medicationrequest.context.reference");
+        aMap.put("medication-request-support-information-reference", "medicationrequest.supportingInformation[0].reference");
+        aMap.put("medication-request-requester-agent-reference", "medicationrequest.requester.agent.reference");
+        aMap.put("medication-request-requester-onbehalfof-reference", "medicationrequest.requester.onBehalfOf.reference");
 
-        aMap.put("encounter-length", "encounter.length.value");
+        aMap.put("medication-request-requester-reason-code-system", "medicationrequest.reasonCode.coding[0].system");
+        aMap.put("medication-request-requester-reason-code-code", "medicationrequest.reasonCode.coding[0].code");
+        aMap.put("medication-request-reason-reference", "medicationrequest.dosageInstruction.reference");
 
-        aMap.put("encounter-reason-code", "encounter.reason[0].element.coding[0].code");
-        aMap.put("encounter-reason-system", "encounter.reason[0].element.coding[0].system");
+        aMap.put("medication-request-dosing-instructions-site-system", "medicationrequest.dosageInstruction[0].site.coding[0].system");
+        aMap.put("medication-request-dosing-instructions-site-code", "medicationrequest.dosageInstruction[0].site.coding[0].code");
 
-        aMap.put("encounter-diagnosis-condition-reference", "encounter.diagnosis[0].element.condition.reference");
-        aMap.put("encounter-diagnosis-condition-role-code", "encounter.diagnosis[0].element.role.coding[0].code");
-        aMap.put("encounter-diagnosis-condition-role-system", "encounter.diagnosis[0].element.role.coding[0].system");
+        aMap.put("medication-request-dosing-instructions-route-system", "medicationrequest.dosageInstruction[0].route.coding[0].system");
+        aMap.put("medication-request-dosing-instructions-route-code", "medicationrequest.dosageInstruction[0].route.coding[0].code");
 
-        aMap.put("encounter-location-reference", "encounter.location[0].element.location.reference");
-        aMap.put("encounter-serviceprovider-reference", "encounter.serviceProvider.reference");
+        aMap.put("medication-request-dosing-instructions-method-system", "medicationrequest.dosageInstruction[0].method.coding[0].system");
+        aMap.put("medication-request-dosing-instructions-method-code", "medicationrequest.dosageInstruction[0].method.coding[0].code");
 
+        aMap.put("medication-request-substitution-system", "medicationrequest.substitution.reason.coding[0].system");
+        aMap.put("medication-request-substitution-code", "medicationrequest.substitution.reason.coding[0].code");
+
+        aMap.put("medication-request-prior-prescription-reference", "medicationrequest.priorPrescription.reference");
 
         mappings = Collections.unmodifiableMap(aMap);
     }

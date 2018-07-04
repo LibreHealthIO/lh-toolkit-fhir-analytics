@@ -1464,7 +1464,7 @@ $(document).ready(function () {
 
         $.ajax({
             url: 'encounter-search',
-            data: JSON.stringify(patientSearch),
+            data: JSON.stringify(encounterSearch),
             type: "POST",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Accept", "application/json");
@@ -1474,16 +1474,617 @@ $(document).ready(function () {
                 var template = $('#spark-results-template').html();
                 var templateScript = Handlebars.compile(template);
                 var html = templateScript(data);
-                $('#patient-results').html(html);
+                $('#encounter-results').html(html);
             }
         });
     });
 
     $('#medication-request-search').click(function (event) {
 
+        var tableName = 'medicationrequest';
+        var medicationRequest = new Object();
+        medicationRequest.tableName = tableName;
+        medicationRequest.fields = [];
+        medicationRequest.rangeFields = [];
+
+        var fieldVal = $('#medication-request-id').val();
+        var fieldCotains = $('#medication-request-id-contains').is(":checked");
+        var fieldOperator = $('#medication-request-id-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-id';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-identifier-id').val();
+        fieldCotains = $('#medication-request-identifier-id-contains').is(":checked");
+        fieldOperator = $('#medication-request-identifier-id-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-identifier-id';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-identifier-id-use').val();
+        fieldCotains = $('#medication-request-identifier-id-use-contains').is(":checked");
+        fieldOperator = $('#medication-request-identifier-id-use-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-identifier-use';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-identifier-id-value').val();
+        fieldCotains = $('#medication-request-identifier-id-value-contains').is(":checked");
+        fieldOperator = $('#medication-request-identifier-id-value-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-identifier-value';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-identifier-system').val();
+        fieldCotains = $('#medication-request-identifier-system-contains').is(":checked");
+        fieldOperator = $('#medication-request-identifier-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-identifier-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-basedon-reference').val();
+        fieldCotains = $('#medication-request-basedon-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-basedon-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-basedon-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-definition-reference').val();
+        fieldCotains = $('#medication-request-definition-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-definition-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-definition-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-status').val();
+        fieldCotains = false;
+        fieldOperator = $('#medication-request-status-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-status';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-intent').val();
+        fieldCotains = false;
+        fieldOperator = $('#medication-request-intent-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-intent';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-category-code').val();
+        fieldCotains = $('#medication-request-category-code-contains').is(":checked");
+        fieldOperator = $('#medication-request-category-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-category-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+
+        fieldVal = $('#medication-request-category-system').val();
+        fieldCotains = $('#medication-request-category-system-contains').is(":checked");
+        fieldOperator = $('#medication-request-category-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-category-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-priority').val();
+        fieldCotains = false;
+        fieldOperator = $('#medication-request-priority-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-priority';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-medication-codeable-code').val();
+        fieldCotains = $('#medication-request-medication-codeable-code-contains').is(":checked");
+        fieldOperator = $('#medication-request-medication-codeable-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-medication-codeable-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-medication-codeable-system').val();
+        fieldCotains = $('#medication-request-medication-codeable-system-contains').is(":checked");
+        fieldOperator = $('#medication-request-medication-codeable-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-medication-codeable-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-medication-reference').val();
+        fieldCotains = $('#medication-request-medication-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-medication-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-medication-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-subject-reference').val();
+        fieldCotains = $('#medication-request-subject-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-subject-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-subject-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-context-reference').val();
+        fieldCotains = $('#medication-request-context-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-context-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-context-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-support-information-reference').val();
+        fieldCotains = $('#medication-request-support-information-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-support-information-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-support-information-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-requester-agent-reference').val();
+        fieldCotains = $('#medication-request-requester-agent-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-requester-agent-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-requester-agent-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-requester-recorder-reference').val();
+        fieldCotains = $('#medication-request-requester-recorder-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-requester-recorder-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-requester-recorder-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-requester-onbehalfof-reference').val();
+        fieldCotains = $('#medication-request-requester-onbehalfof-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-requester-onbehalfof-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-requester-onbehalfof-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-requester-reason-code-system').val();
+        fieldCotains = $('#medication-request-requester-reason-code-system-contains').is(":checked");
+        fieldOperator = $('#medication-request-requester-reason-code-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-requester-reason-code-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-requester-reason-code-code').val();
+        fieldCotains = $('#medication-request-requester-reason-code-code-contains').is(":checked");
+        fieldOperator = $('#medication-request-requester-reason-code-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-requester-reason-code-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-reason-reference').val();
+        fieldCotains = $('#medication-request-reason-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-reason-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-reason-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-dosing-instructions-site-system').val();
+        fieldCotains = $('#medication-request-dosing-instructions-site-system-contains').is(":checked");
+        fieldOperator = $('#medication-request-dosing-instructions-site-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-dosing-instructions-site-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-dosing-instructions-site-code').val();
+        fieldCotains = $('#medication-request-dosing-instructions-site-code-contains').is(":checked");
+        fieldOperator = $('#medication-request-dosing-instructions-site-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-dosing-instructions-site-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-dosing-instructions-method-system').val();
+        fieldCotains = $('#medication-request-dosing-instructions-method-system-contains').is(":checked");
+        fieldOperator = $('#medication-request-dosing-instructions-method-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-dosing-instructions-method-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-dosing-instructions-method-code').val();
+        fieldCotains = $('#medication-request-dosing-instructions-method-code-contains').is(":checked");
+        fieldOperator = $('#medication-request-dosing-instructions-method-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-dosing-instructions-method-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-dosing-instructions-route-system').val();
+        fieldCotains = $('#medication-request-dosing-instructions-route-system-contains').is(":checked");
+        fieldOperator = $('#medication-request-dosing-instructions-route-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-dosing-instructions-route-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-dosing-instructions-route-code').val();
+        fieldCotains = $('#medication-request-dosing-instructions-route-code-contains').is(":checked");
+        fieldOperator = $('#medication-request-dosing-instructions-route-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-dosing-instructions-route-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-substitution-system').val();
+        fieldCotains = $('#medication-request-substitution-system-contains').is(":checked");
+        fieldOperator = $('#medication-request-substitution-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-substitution-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-substitution-code').val();
+        fieldCotains = $('#medication-request-substitution-code-contains').is(":checked");
+        fieldOperator = $('#medication-request-substitution-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-substitution-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#medication-request-prior-prescription-reference').val();
+        fieldCotains = $('#medication-request-prior-prescription-reference-contains').is(":checked");
+        fieldOperator = $('#medication-request-prior-prescription-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'medication-request-prior-prescription-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
         $.ajax({
             url: 'medication-request-search',
-            data: JSON.stringify(patientSearch),
+            data: JSON.stringify(medicationRequest),
             type: "POST",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Accept", "application/json");
@@ -1493,16 +2094,401 @@ $(document).ready(function () {
                 var template = $('#spark-results-template').html();
                 var templateScript = Handlebars.compile(template);
                 var html = templateScript(data);
-                $('#patient-results').html(html);
+                $('#medication-request-results').html(html);
             }
         });
     })
 
     $('#diagnostic-report-search').click(function (event) {
+        var tableName = 'diagnosticreport';
+        var medicationRequest = new Object();
+        medicationRequest.tableName = tableName;
+        medicationRequest.fields = [];
+        medicationRequest.rangeFields = [];
+
+        var fieldVal = $('#diagnostic-report-id').val();
+        var fieldCotains = $('#diagnostic-report-id-contains').is(":checked");
+        var fieldOperator = $('#diagnostic-report-id-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-id';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-identifier-id').val();
+        fieldCotains = $('#diagnostic-report-identifier-id-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-identifier-id-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-identifier-id';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-identifier-id-use').val();
+        fieldCotains = $('#diagnostic-report-identifier-id-use-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-identifier-id-use-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-identifier-use';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-identifier-id-value').val();
+        fieldCotains = $('#diagnostic-report-identifier-id-value-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-identifier-id-value-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-identifier-value';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-identifier-system').val();
+        fieldCotains = $('#diagnostic-report-identifier-system-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-identifier-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-identifier-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.operator = 'AND';
+            field.type = 'string';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-basedon-reference').val();
+        fieldCotains = $('#diagnostic-report-basedon-reference-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-basedon-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-basedon-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-status').val();
+        fieldCotains = false;
+        fieldOperator = $('#diagnostic-report-status-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-status';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-category-code').val();
+        fieldCotains = $('#diagnostic-report-category-code-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-category-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-category-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+
+        fieldVal = $('#diagnostic-report-category-system').val();
+        fieldCotains = $('#diagnostic-report-category-system-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-category-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-category-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-code-code').val();
+        fieldCotains = $('#diagnostic-report-code-code-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-code-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-code-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+
+        fieldVal = $('#diagnostic-report-code-system').val();
+        fieldCotains = $('#diagnostic-report-code-system-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-code-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-code-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-subject-reference').val();
+        fieldCotains = $('#diagnostic-report-subject-reference-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-subject-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-subject-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-context-reference').val();
+        fieldCotains = $('#diagnostic-report-context-reference-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-context-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-context-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-performer-role-code').val();
+        fieldCotains = $('#diagnostic-report-performer-role-code-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-performer-role-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-performer-role-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-performer-role-system').val();
+        fieldCotains = $('#diagnostic-report-performer-role-system-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-performer-role-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-performer-role-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-specimen-reference').val();
+        fieldCotains = $('#diagnostic-report-specimen-reference-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-specimen-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-specimen-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-result-reference').val();
+        fieldCotains = $('#diagnostic-report-result-reference-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-result-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-result-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-image-study-reference').val();
+        fieldCotains = $('#diagnostic-report-image-study-reference-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-image-study-reference-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-image-study-reference';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-conclusion').val();
+        fieldCotains = $('#diagnostic-report-conclusion-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-conclusion-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-conclusion';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-coded-diagnosis-code').val();
+        fieldCotains = $('#diagnostic-report-coded-diagnosis-code-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-coded-diagnosis-code-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-coded-diagnosis-code';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
+
+        fieldVal = $('#diagnostic-report-coded-diagnosis-system').val();
+        fieldCotains = $('#diagnostic-report-coded-diagnosis-system-contains').is(":checked");
+        fieldOperator = $('#diagnostic-report-coded-diagnosis-system-combined').is(":checked");
+
+        if (fieldVal != null && fieldVal != "") {
+            var field = new Object();
+            field.column = 'diagnostic-report-coded-diagnosis-system';
+            field.table = tableName;
+            field.contains = fieldCotains;
+            field.type = 'string';
+            field.operator = 'AND';
+            if (fieldOperator == true) {
+                field.operator = 'OR';
+            }
+            field.value = fieldVal;
+            medicationRequest.fields.push(field);
+        }
 
         $.ajax({
             url: 'diagnostic-report-search',
-            data: JSON.stringify(patientSearch),
+            data: JSON.stringify(medicationRequest),
             type: "POST",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Accept", "application/json");
@@ -1512,7 +2498,7 @@ $(document).ready(function () {
                 var template = $('#spark-results-template').html();
                 var templateScript = Handlebars.compile(template);
                 var html = templateScript(data);
-                $('#patient-results').html(html);
+                $('#diagnostic-report-results').html(html);
             }
         });
     });

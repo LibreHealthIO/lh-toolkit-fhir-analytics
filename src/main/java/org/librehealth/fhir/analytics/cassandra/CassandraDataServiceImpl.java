@@ -391,7 +391,6 @@ public class CassandraDataServiceImpl implements CassandraDataService {
         Dataset<Encounter> dataset = sparkSession.createDataset(javaRDD.rdd(),
                 encoders.of(Encounter.class));
         dataset.createOrReplaceTempView(LibreHealthAnalyticConstants.ENCOUNTER);
-        dataset.printSchema();
     }
 
     public void loadMedications(JavaSparkContext sc, SparkSession sparkSession) {
@@ -680,6 +679,7 @@ public class CassandraDataServiceImpl implements CassandraDataService {
         Dataset<DiagnosticReport> dataset = sparkSession.createDataset(javaRDD.rdd(),
                 encoders.of(DiagnosticReport.class));
         dataset.createOrReplaceTempView(LibreHealthAnalyticConstants.DIAGNOSTICREPORT);
+        dataset.printSchema();
     }
 
     public void loadProcedures(JavaSparkContext sc, SparkSession sparkSession) {

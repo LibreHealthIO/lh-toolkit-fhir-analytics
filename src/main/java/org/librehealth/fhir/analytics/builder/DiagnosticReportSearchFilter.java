@@ -15,38 +15,37 @@ public class DiagnosticReportSearchFilter extends BaseSearchFilter {
 
     static {
         Map<String, String> aMap = new HashMap<>();
-        aMap.put("encounter-id", "encounter.id");
+        aMap.put("diagnostic-report-id", "diagnosticreport.id");
 
-        aMap.put("encounter-identifier-id", "encounter.identifier[0].id");
-        aMap.put("encounter-identifier-use", "encounter.identifier[0].use");
-        aMap.put("encounter-identifier-system", "encounter.identifier[0].system");
-        aMap.put("encounter-identifier-value", "encounter.identifier[0].value");
+        aMap.put("diagnostic-report-identifier-id", "diagnosticreport.identifier[0].id");
+        aMap.put("diagnostic-report-identifier-use", "diagnosticreport.identifier[0].use");
+        aMap.put("diagnostic-report-identifier-system", "diagnosticreport.identifier[0].system");
+        aMap.put("diagnostic-report-identifier-value", "diagnosticreport.identifier[0].value");
 
-        aMap.put("encounter-status", "encounter.status");
+        aMap.put("diagnostic-report-basedon-reference", "diagnosticreport.basedOn.reference");
+        aMap.put("diagnostic-report-status", "diagnosticreport.status");
 
-        aMap.put("encounter-class-code", "encounter.code.code");
-        aMap.put("encounter-class-system", "encounter.code.system");
+        aMap.put("diagnostic-report-category-code", "diagnosticreport.category.coding[0].code");
+        aMap.put("diagnostic-report-category-system", "diagnosticreport.category.coding[0].system");
 
-        aMap.put("encounter-type-code", "encounter.type.coding[0].code");
-        aMap.put("encounter-type-system", "encounter.type.coding[0].system");
+        aMap.put("diagnostic-report-code-code", "diagnosticreport.code.coding[0].code");
+        aMap.put("diagnostic-report-code-system", "diagnosticreport.code.coding[0].system");
 
-        aMap.put("encounter-priority-code", "encounter.priority.coding[0].code");
-        aMap.put("encounter-priority-system", "encounter.priority.coding[0].system");
+        aMap.put("diagnostic-report-subject-reference", "diagnosticreport.subject.reference");
+        aMap.put("diagnostic-report-context-reference", "diagnosticreport.context.reference");
 
-        aMap.put("encounter-subject-reference", "encounter.subject.reference");
-        aMap.put("encounter-appointment-reference", "encounter.appointment.reference");
+        aMap.put("diagnostic-report-performer-role-code", "diagnosticreport.performer[0].role.coding[0].code");
+        aMap.put("diagnostic-report-performer-role-system", "diagnosticreport.performer[0].role.coding[0].system");
+        aMap.put("diagnostic-report-performer-actor-reference", "diagnosticreport.performer[0].actor.reference");
 
-        aMap.put("encounter-length", "encounter.length.value");
+        aMap.put("diagnostic-report-specimen-reference", "diagnosticreport.specimen[0].reference");
+        aMap.put("diagnostic-report-result-reference", "diagnosticreport.result[0].reference");
+        aMap.put("diagnostic-report-image-study-reference", "diagnosticreport.imagingStudy[0].reference");
 
-        aMap.put("encounter-reason-code", "encounter.reason[0].element.coding[0].code");
-        aMap.put("encounter-reason-system", "encounter.reason[0].element.coding[0].system");
+        aMap.put("diagnostic-report-conclusion", "diagnosticreport.conclusion");
 
-        aMap.put("encounter-diagnosis-condition-reference", "encounter.diagnosis[0].element.condition.reference");
-        aMap.put("encounter-diagnosis-condition-role-code", "encounter.diagnosis[0].element.role.coding[0].code");
-        aMap.put("encounter-diagnosis-condition-role-system", "encounter.diagnosis[0].element.role.coding[0].system");
-
-        aMap.put("encounter-location-reference", "encounter.location[0].element.location.reference");
-        aMap.put("encounter-serviceprovider-reference", "encounter.serviceProvider.reference");
+        aMap.put("diagnostic-report-coded-diagnosis-system", "diagnosticreport.codedDiagnosis[0].coding[0].system");
+        aMap.put("diagnostic-report-coded-diagnosis-code", "diagnosticreport.codedDiagnosis[0].coding[0].code");
 
 
         mappings = Collections.unmodifiableMap(aMap);

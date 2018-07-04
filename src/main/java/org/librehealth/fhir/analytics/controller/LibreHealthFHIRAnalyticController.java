@@ -175,7 +175,7 @@ public class LibreHealthFHIRAnalyticController {
         return new ResponseEntity(data, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/diagnosticreport-search", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/diagnostic-report-search", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> searchDiagnosticReport(@RequestBody SearchObj searchObj) {
         String data = "";
         DiagnosticReportSearchFilter diagnosticReportSearchFilter = new DiagnosticReportSearchFilter();
