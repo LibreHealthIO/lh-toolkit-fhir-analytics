@@ -69,7 +69,39 @@ body {
     margin-bottom: 0px;
 }
 
+.table td {
+    padding: 5px;
+}
 .sub-heading {
     float: right;
     margin-right:50px;
+}
+
+.card-body {
+    padding: 0px 0px 0px 30px;
+}
+
+label {
+    width:100px;
+    clear:left;
+    text-align:left;
+    padding-right:10px;
+}
+
+input, label {
+    float:left;
+}
+.col-form-label {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.btn-primary-spacing {
+    margin-top: 5px !important;
+}
+
+.btn-outline-success {
+    color: #383d41;
+    border-color: #01010f;
+    margin: 3px;
 }
