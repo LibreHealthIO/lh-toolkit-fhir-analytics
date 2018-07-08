@@ -28,6 +28,10 @@ $(document).ready(function () {
         });
     });
 
+    $(function(){
+        load('patient');
+    });
+
     $('#observation-search').click(function (event) {
         var tableName = 'observation';
         var observationSearch = new Object();
