@@ -23,6 +23,7 @@ import org.librehealth.fhir.analytics.exception.LibreHealthFHIRAnalyticsExceptio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
+@EnableAutoConfiguration
 public class LibreHealthFHIRAnalyticsApplication extends SpringBootServletInitializer implements WebMvcConfigurer {
 	private static final Logger logger = LoggerFactory.getLogger(LibreHealthFHIRAnalyticsApplication.class);
 
