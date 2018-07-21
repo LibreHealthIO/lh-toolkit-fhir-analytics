@@ -137,14 +137,18 @@
 		</dependency>
 		<dependency>
 			<groupId>com.datastax.spark</groupId>
-			<artifactId>spark-cassandra-connector_2.11</artifactId>
-			<version>2.0.7</version>
+			<artifactId>spark-cassandra-connector-unshaded_2.11</artifactId>
+			<version>2.3.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.datastax.cassandra</groupId>
+			<artifactId>cassandra-driver-mapping</artifactId>
+			<version>3.3.0</version>
+		</dependency>
 		<dependency>
 			<groupId>com.datastax.cassandra</groupId>
 			<artifactId>cassandra-driver-core</artifactId>
-			<version>3.5.0</version>
+			<version>3.3.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -239,6 +243,84 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.5</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ca.uhn.hapi.fhir</groupId>
+			<artifactId>hapi-fhir-client</artifactId>
+			<version>${hapi.fhir.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<version>3.1.7.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.20</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-cassandra-reactive</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-cassandra</artifactId>
+			<version>2.0.6.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<version>${springVersion}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-codec-http</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-handler-proxy</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-codec-socks</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-transport-native-epoll</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-transport-native-unix-common</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>${springVersion}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.4.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -277,7 +359,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>org.librehealth.fhir.analytics.LibreHealthFHIRAnalyticsApplication</mainClass>
+							<mainClass>org.librehealth.fhir.LibreHealthFHIRAnalyticsApplication</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -294,7 +376,7 @@
 		<scala.version>2.11.8</scala.version>
 		<scala.binary.version>2.11</scala.binary.version>
 		<parquet.version>1.7.0</parquet.version>
-		<hapi.fhir.version>3.3.0</hapi.fhir.version>
+		<hapi.fhir.version>3.4.0</hapi.fhir.version>
 		<junit.version>4.11</junit.version>
 		<jackson.version>2.6.5</jackson.version>
 		<maven-javadoc.plugin.version>2.10.3</maven-javadoc.plugin.version>
@@ -302,6 +384,6 @@
 		<hapiFhirStructuresDstuVersion>3.3.0</hapiFhirStructuresDstuVersion>
 		<hapiFhirBaseVersion>3.3.0</hapiFhirBaseVersion>
 		<springVersion>2.0.1.RELEASE</springVersion>
-		<start-class>org.librehealth.fhir.analytics.LibreHealthFHIRAnalyticsApplication</start-class>
+		<start-class>org.librehealth.fhir.LibreHealthFHIRAnalyticsApplication</start-class>
 	</properties>
 </project>

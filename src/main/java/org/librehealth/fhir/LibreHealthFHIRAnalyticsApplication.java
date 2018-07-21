@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.librehealth.fhir.analytics;
+package org.librehealth.fhir;
 
 import com.datastax.driver.core.Session;
+import org.librehealth.fhir.analytics.LibreHealthFHIRAnalyticsExecutionManager;
 import org.librehealth.fhir.analytics.cassandra.CassandraDataService;
 import org.librehealth.fhir.analytics.cassandra.CassandraDataServiceImpl;
 import org.librehealth.fhir.analytics.exception.LibreHealthFHIRAnalyticsException;
@@ -49,7 +50,7 @@ public class LibreHealthFHIRAnalyticsApplication extends SpringBootServletInitia
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests().antMatchers("/css/**").permitAll().anyRequest()
+			http.authorizeRequests().antMatchers("/css/**", "/Patient/**").permitAll().anyRequest()
 					.fullyAuthenticated().and().formLogin().loginPage("/login")
 					.failureUrl("/login?error").permitAll().and().logout().permitAll();
 			http.csrf().disable();
