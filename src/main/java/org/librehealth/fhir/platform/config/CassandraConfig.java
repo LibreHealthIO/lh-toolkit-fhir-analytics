@@ -70,7 +70,7 @@ public class CassandraConfig {
   }
 
   private Set<Class<?>> getInitialEntitySet() throws ClassNotFoundException {
-    return CassandraEntityClassScanner.scan("org.openmrs.model");
+    return CassandraEntityClassScanner.scan("org.librehealth.fhir.platform.model");
   }
 
 }
