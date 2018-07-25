@@ -1,4 +1,4 @@
-package org.librehealth.fhir.platform.handler;
+package org.librehealth.fhir.platform.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -12,10 +12,9 @@ import org.springframework.data.cassandra.core.ReactiveCassandraOperations;
 import org.springframework.data.cassandra.core.query.Criteria;
 import org.springframework.data.cassandra.core.query.CriteriaDefinition;
 import org.springframework.data.cassandra.core.query.Query;
-import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,16 +26,17 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 
-@Component
+@RestController
+@RequestMapping("Patient")
 @RequiredArgsConstructor
-public class PatientHandler {
+public class PatientController {
 
   private final PatientRepository patientRepository;
   private final ReactiveCassandraOperations reactiveCassandraOperations;
 
-  public Mono<ServerResponse> update(ServerRequest request) {
-    String id = request.pathVariable("id");
-    Mono<CPatient> updatedPatientMono = request.bodyToMono(CPatient.class)
+  @PutMapping(value = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public Mono<ServerResponse> update(@PathVariable String id, @RequestBody Mono<CPatient> patientMono) {
+    Mono<CPatient> updatedPatientMono = patientMono
             .doOnNext(patient -> patient.setPatientId(id));
     return patientRepository
             .findById(id)
@@ -54,30 +54,8 @@ public class PatientHandler {
                     .body(patientRepository.saveAll(updatedPatientMono), CPatient.class));
   }
 
-  public Mono<ServerResponse> save(ServerRequest request) {
-    Mono<CPatient> patientMono = request
-            .bodyToMono(CPatient.class)
-            .doOnNext(patient -> patient.setId(IdType.newRandomUuid()));
-    return ServerResponse.ok()
-            .body(patientRepository.saveAll(patientMono), CPatient.class);
-  }
-
-  public Mono<ServerResponse> delete(ServerRequest request) {
-    String id = request.pathVariable("id");
-    return ServerResponse.noContent()
-            .build(patientRepository.deleteById(id));
-  }
-
-  public Mono<ServerResponse> getById(ServerRequest request) {
-    String id = request.pathVariable("id");
-    return patientRepository
-            .findById(id)
-            .flatMap(patient -> ServerResponse.ok().body(Mono.just(patient), CPatient.class))
-            .switchIfEmpty(ServerResponse.notFound().build());
-  }
-
-  public Mono<ServerResponse> search(ServerRequest request) {
-    MultiValueMap<String, String> params = request.queryParams();
+  @GetMapping
+  Mono<ServerResponse> search(@RequestParam Map<String, String> params) {
 
     if (params.size() == 0) {
       // Return all entities if no search parameters specified
@@ -88,7 +66,7 @@ public class PatientHandler {
     try {
       List<CriteriaDefinition> criteriaDefinitions = new ArrayList<>();
       for (Map.Entry<String, String> entry :
-              params.toSingleValueMap().entrySet()) {
+              params.entrySet()) {
         if (entry.getValue() == null) {
           throw new IllegalStateException("Search parameter value cannot be null");
         }
@@ -144,6 +122,28 @@ public class PatientHandler {
     }
   }
 
+  @DeleteMapping("{id}")
+  Mono<ServerResponse> delete(@PathVariable String id) {
+    return ServerResponse.noContent()
+            .build(patientRepository.deleteById(id));
+  }
+
+  @GetMapping("{id}")
+  Mono<ServerResponse> getById(@PathVariable String id) {
+    return patientRepository
+            .findById(id)
+            .flatMap(patient -> ServerResponse.ok().body(Mono.just(patient), CPatient.class))
+            .switchIfEmpty(ServerResponse.notFound().build());
+  }
+
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  public Mono<ServerResponse> save(@RequestBody Mono<CPatient> patientMono) {
+    patientMono = patientMono
+            .doOnNext(patient -> patient.setId(IdType.newRandomUuid()));
+    return ServerResponse.ok()
+            .body(patientRepository.saveAll(patientMono), CPatient.class);
+  }
+
   private OperationOutcome getOperationOutcome(OperationOutcome.IssueSeverity severity, OperationOutcome.IssueType type, String diagnostics) {
     OperationOutcome outcome = new OperationOutcome();
     OperationOutcome.OperationOutcomeIssueComponent issue = new OperationOutcome.OperationOutcomeIssueComponent();
@@ -161,5 +161,4 @@ public class PatientHandler {
             .filter(s -> wrapper.getPropertyValue(s) == null)
             .toArray(String[]::new);
   }
-
 }
