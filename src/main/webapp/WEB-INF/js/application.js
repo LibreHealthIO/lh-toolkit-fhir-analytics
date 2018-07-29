@@ -6,6 +6,25 @@ function populateQueryResults() {
     $('#results').append(html);
 }
 
+
+function submitForm() {
+    $.ajax({
+        url: "/upload",
+        type: "POST",
+        data: new FormData($("#uploadForm")[0]),
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function () {
+            $("#uploadModal").modal('hide');
+        },
+        error: function () {
+            $("#uploadModal").modal('hide');
+        }
+    });
+} // function uploadFile
+
 $(document).ready(function () {
 
     $('#sparksqlbtn').click(function (event) {
@@ -27,6 +46,11 @@ $(document).ready(function () {
             }
         });
     });
+
+    $( "#uploadForm").submit(function( event ) {
+        event.preventDefault();
+    });
+
 
     $('#observation-search').click(function (event) {
         var tableName = 'observation';

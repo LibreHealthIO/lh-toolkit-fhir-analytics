@@ -1,5 +1,6 @@
 package org.librehealth.fhir.analytics.controller;
 
+import com.datastax.driver.core.Session;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.librehealth.fhir.analytics.LibreHealthFHIRAnalyticsExecutionManager;
 import org.librehealth.fhir.analytics.builder.DiagnosticReportSearchFilter;
@@ -8,6 +9,8 @@ import org.librehealth.fhir.analytics.builder.MedicationRequestSearchFilter;
 import org.librehealth.fhir.analytics.builder.ObservationSearchFilter;
 import org.librehealth.fhir.analytics.builder.PatientAttributeSearchFilter;
 import org.librehealth.fhir.analytics.builder.SparkQueryBuilder;
+import org.librehealth.fhir.analytics.cassandra.CassandraDataService;
+import org.librehealth.fhir.analytics.cassandra.CassandraDataServiceImpl;
 import org.librehealth.fhir.analytics.exception.LibreHealthFHIRAnalyticsException;
 import org.librehealth.fhir.analytics.model.SearchObj;
 import org.librehealth.fhir.analytics.model.SparkSQLQuery;
@@ -23,7 +26,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -203,5 +210,27 @@ public class LibreHealthFHIRAnalyticController {
             return new ResponseEntity(data, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity(data, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/upload", headers = ("content-type=multipart/*"), method = RequestMethod.POST)
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile inputFile) {
+        HttpHeaders headers = new HttpHeaders();
+        try {
+            BufferedInputStream bis = new BufferedInputStream(inputFile.getInputStream());
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            int result = bis.read();
+            while (result != -1) {
+                buf.write((byte) result);
+                result = bis.read();
+            }
+            String data = buf.toString("UTF-8");
+            LibreHealthFHIRAnalyticsExecutionManager manager = LibreHealthFHIRAnalyticsExecutionManager.getInstance();
+            CassandraDataService cassandraDataStoreService = CassandraDataServiceImpl.getInstance();
+            Session session = manager.getCassandraConnector().openSession();
+            cassandraDataStoreService.insertData(session, data);
+            return new ResponseEntity<>(headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

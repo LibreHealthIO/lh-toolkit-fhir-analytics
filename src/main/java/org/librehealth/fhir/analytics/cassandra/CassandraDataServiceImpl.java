@@ -905,4 +905,37 @@ public class CassandraDataServiceImpl implements CassandraDataService {
                 encoders.of(Device.class));
         dataset.createOrReplaceTempView(LibreHealthAnalyticConstants.DEVICE);
     }
+
+    @Override
+    public void insertData(Session session, String resource) {
+        FhirContext fhirCtx = FhirContext.forDstu3();
+        IParser parser = fhirCtx.newJsonParser().setPrettyPrint(true);
+        String resourceType;
+        String cqlTableTemplate = LibreHealthAnalyticConstants.CREATE_TABLE_TEMPLATED_CQL;
+        String cqlInsertTemplate = LibreHealthAnalyticConstants.INSERT_VALUES_TEMPLATED_CQL;
+        Resource fhirResource;
+        Bundle bundle;
+        IBaseResource baseResource = parser.parseResource(resource);
+        IIdType iIdType = baseResource.getIdElement();
+        resourceType = iIdType.getResourceType();
+        if (!(baseResource instanceof Bundle) && baseResource instanceof Resource) {
+            if (StringUtils.isEmpty(resourceType) || StringUtils.isEmpty(iIdType.getIdPart())) {
+                return;
+            }
+            session.execute(String.format(cqlTableTemplate, resourceType.toLowerCase()));
+            PreparedStatement prepared = session.prepare(String.format(cqlInsertTemplate, resourceType.toLowerCase()));
+            BoundStatement bound = prepared.bind(iIdType.getIdPart(), resource);
+            session.execute(bound);
+        } else {
+            bundle = (Bundle) baseResource;
+            for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                fhirResource = entry.getResource();
+                resourceType = fhirResource.getResourceType().name();
+                session.execute(String.format(cqlTableTemplate, resourceType.toLowerCase()));
+                PreparedStatement prepared = session.prepare(String.format(cqlInsertTemplate, resourceType.toLowerCase()));
+                BoundStatement bound = prepared.bind(fhirResource.getId(), parser.encodeResourceToString(fhirResource));
+                session.execute(bound);
+            }
+        }
+    }
 }

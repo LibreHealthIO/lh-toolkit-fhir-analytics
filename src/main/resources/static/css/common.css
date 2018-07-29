@@ -105,3 +105,7 @@ input, label {
     border-color: #01010f;
     margin: 3px;
 }
+
+input[type='checkbox'] {
+    margin-top: 3px;
+}

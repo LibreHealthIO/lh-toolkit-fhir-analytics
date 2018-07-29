@@ -54,4 +54,5 @@ public interface CassandraDataService {
     void loadOrganizations(JavaSparkContext sc, SparkSession sparkSession);
     void loadProcedures(JavaSparkContext sc, SparkSession sparkSession);
     void loadDevices(JavaSparkContext sc, SparkSession sparkSession);
+    void insertData(Session session, String resource);
 }
