@@ -24,9 +24,21 @@ function submitForm() {
     });
 } // function uploadFile
 
+/**
+ * Hides "Please wait" overlay. See function showPleaseWait().
+ */
+function hidePleaseWait() {
+    $("#pleaseWaitDialog").modal("hide");
+}
+
+function showPleaseWait() {
+    $("#pleaseWaitDialog").modal("show");
+}
+
 $(document).ready(function () {
 
     $('#sparksqlbtn').click(function (event) {
+        showPleaseWait();
         var sql = $('#sparksql').val();
         var json = {query: sql};
         $.ajax({
@@ -42,6 +54,7 @@ $(document).ready(function () {
                 var templateScript = Handlebars.compile(template);
                 var html = templateScript(data);
                 $('#results').html(html);
+                hidePleaseWait();
             }
         });
     });
@@ -581,7 +594,7 @@ $(document).ready(function () {
             field.value = fieldVal;
             observationSearch.fields.push(field);
         }
-
+        showPleaseWait();
         $.ajax({
             url: 'observation-search',
             data: JSON.stringify(observationSearch),
@@ -595,6 +608,7 @@ $(document).ready(function () {
                 var templateScript = Handlebars.compile(template);
                 var html = templateScript(data);
                 $('#observation-results').html(html);
+                hidePleaseWait();
             }
         });
     });
@@ -1066,7 +1080,7 @@ $(document).ready(function () {
             field.value = fieldVal;
             patientSearch.fields.push(field);
         }
-
+        showPleaseWait();
         $.ajax({
             url: 'patient-search',
             data: JSON.stringify(patientSearch),
@@ -1080,6 +1094,7 @@ $(document).ready(function () {
                 var templateScript = Handlebars.compile(template);
                 var html = templateScript(data);
                 $('#patient-results').html(html);
+                hidePleaseWait();
             }
         });
     });
@@ -1489,6 +1504,7 @@ $(document).ready(function () {
             encounterSearch.fields.push(field);
         }
 
+        showPleaseWait();
         $.ajax({
             url: 'encounter-search',
             data: JSON.stringify(encounterSearch),
@@ -1502,6 +1518,7 @@ $(document).ready(function () {
                 var templateScript = Handlebars.compile(template);
                 var html = templateScript(data);
                 $('#encounter-results').html(html);
+                hidePleaseWait();
             }
         });
     });
@@ -2109,6 +2126,7 @@ $(document).ready(function () {
             medicationRequest.fields.push(field);
         }
 
+        showPleaseWait();
         $.ajax({
             url: 'medication-request-search',
             data: JSON.stringify(medicationRequest),
@@ -2122,6 +2140,7 @@ $(document).ready(function () {
                 var templateScript = Handlebars.compile(template);
                 var html = templateScript(data);
                 $('#medication-request-results').html(html);
+                hidePleaseWait();
             }
         });
     })
@@ -2513,6 +2532,7 @@ $(document).ready(function () {
             medicationRequest.fields.push(field);
         }
 
+        showPleaseWait();
         $.ajax({
             url: 'diagnostic-report-search',
             data: JSON.stringify(medicationRequest),
@@ -2526,6 +2546,7 @@ $(document).ready(function () {
                 var templateScript = Handlebars.compile(template);
                 var html = templateScript(data);
                 $('#diagnostic-report-results').html(html);
+                hidePleaseWait();
             }
         });
     });
