@@ -20,7 +20,7 @@ public final class ConvertUtils {
     try {
       return JacksonConfig.mapper.writeValueAsString(object);
     } catch (JsonProcessingException e) {
-      throw new IllegalStateException(e);
+      return "";
     }
   }
 
