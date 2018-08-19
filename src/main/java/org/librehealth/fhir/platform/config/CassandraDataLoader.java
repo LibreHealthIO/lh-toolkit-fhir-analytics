@@ -1,32 +1,25 @@
 package org.librehealth.fhir.platform.config;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.IQuery;
-import com.datastax.driver.core.BoundStatement;
-import com.datastax.driver.core.PreparedStatement;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang.StringUtils;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.Encounter;
+import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.Resource;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.instance.model.api.IIdType;
-import org.librehealth.fhir.analytics.constants.LibreHealthAnalyticConstants;
-import org.librehealth.fhir.analytics.exception.LibreHealthFHIRAnalyticsException;
-import org.librehealth.fhir.analytics.utils.LibrehealthAnalyticsUtils;
+import org.librehealth.fhir.platform.model.CEncounter;
+import org.librehealth.fhir.platform.model.CObservation;
 import org.librehealth.fhir.platform.model.CPatient;
+import org.librehealth.fhir.platform.repository.EncounterRepository;
+import org.librehealth.fhir.platform.repository.ObservationRepository;
 import org.librehealth.fhir.platform.repository.PatientRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +28,8 @@ import java.util.stream.Collectors;
 public class CassandraDataLoader implements CommandLineRunner {
 
   private final PatientRepository patientRepository;
+  private final ObservationRepository observationRepository;
+  private final EncounterRepository encounterRepository;
   private final FhirContext fhirContext = FhirContext.forDstu3();
 
   @Value("${fhir.server.url}")
@@ -45,53 +40,28 @@ public class CassandraDataLoader implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    Bundle patientBundle;
     IGenericClient client = fhirContext.newRestfulGenericClient(server);
-    patientBundle = getData(client, count, Patient.class);
+    Bundle patientBundle = getData(client, count, Patient.class);
     List<CPatient> patients = patientBundle
             .getEntry()
             .stream()
-            .map(entry -> castToCustomPatient((Patient) entry.getResource()))
+            .map(entry -> castToTargetResource(entry.getResource(), new CPatient()))
             .collect(Collectors.toList());
     patientRepository.saveAll(patients).subscribe();
-
-    FhirContext fhirCtx = FhirContext.forDstu3();
-    IParser parser = fhirCtx.newJsonParser().setPrettyPrint(true);
-    ClassLoader loader = getClass().getClassLoader();
-    URL url = loader.getResource(LibreHealthAnalyticConstants.DATA_PATH);
-    String path = url.getPath();
-    File[] files = new File(path).listFiles();
-    String resource, resourceType;
-    Resource fhirResource;
-    Bundle bundle;
-    for (File file : files) {
-      try {
-        resource = LibrehealthAnalyticsUtils.readFileAsString(file);
-        IBaseResource baseResource = parser.parseResource(resource);
-        IIdType iIdType = baseResource.getIdElement();
-        resourceType = iIdType.getResourceType();
-        if (!(baseResource instanceof Bundle) && baseResource instanceof Resource) {
-          if (StringUtils.isEmpty(resourceType) || StringUtils.isEmpty(iIdType.getIdPart())) {
-            continue;
-          }
-          if (resourceType.equalsIgnoreCase("patient")) {
-            patientRepository.save(castToCustomPatient((Patient) baseResource)).subscribe();
-          }
-        } else {
-          bundle = (Bundle) baseResource;
-          for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
-            fhirResource = entry.getResource();
-            resourceType = fhirResource.getResourceType().name();
-            if (resourceType.equalsIgnoreCase("patient")) {
-              patientRepository.save(castToCustomPatient((Patient) fhirResource)).subscribe();
-            }
-          }
-        }
-      } catch (IOException e) {
-        throw new LibreHealthFHIRAnalyticsException("Error while reading data from files", e);
-      }
-    }
-
+    Bundle observationBundle = getData(client, count, Observation.class);
+    List<CObservation> observations = observationBundle
+            .getEntry()
+            .stream()
+            .map(entry -> castToTargetResource(entry.getResource(), new CObservation()))
+            .collect(Collectors.toList());
+    observationRepository.saveAll(observations).subscribe();
+    Bundle encounterBundle = getData(client, count, Encounter.class);
+    List<CEncounter> encounters = encounterBundle
+            .getEntry()
+            .stream()
+            .map(entry -> castToTargetResource(entry.getResource(), new CEncounter()))
+            .collect(Collectors.toList());
+    encounterRepository.saveAll(encounters).subscribe();
   }
 
   /**
@@ -109,9 +79,8 @@ public class CassandraDataLoader implements CommandLineRunner {
     return query.execute();
   }
 
-  public CPatient castToCustomPatient(Patient patient) {
-    CPatient customPatient = new CPatient();
-    BeanUtils.copyProperties(patient, customPatient);
-    return customPatient;
+  private <S, T> T castToTargetResource(S source, T target) {
+    BeanUtils.copyProperties(source, target);
+    return target;
   }
 }

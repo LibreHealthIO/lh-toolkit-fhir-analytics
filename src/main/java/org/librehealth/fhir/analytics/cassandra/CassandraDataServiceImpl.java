@@ -65,7 +65,6 @@ import org.hl7.fhir.instance.model.api.IIdType;
 import org.librehealth.fhir.analytics.constants.LibreHealthAnalyticConstants;
 import org.librehealth.fhir.analytics.exception.LibreHealthFHIRAnalyticsException;
 import org.librehealth.fhir.analytics.utils.LibrehealthAnalyticsUtils;
-import org.librehealth.fhir.platform.model.CPatient;
 
 import java.io.File;
 import java.io.IOException;

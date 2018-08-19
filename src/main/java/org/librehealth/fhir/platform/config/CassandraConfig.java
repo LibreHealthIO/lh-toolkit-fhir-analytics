@@ -3,10 +3,11 @@ package org.librehealth.fhir.platform.config;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.QueryLogger;
 import lombok.RequiredArgsConstructor;
+import org.librehealth.fhir.platform.annotation.CassandraConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.cassandra.config.CassandraClusterFactoryBean;
 import org.springframework.data.cassandra.config.CassandraCqlClusterFactoryBean;
 import org.springframework.data.cassandra.config.CassandraEntityClassScanner;
@@ -16,6 +17,7 @@ import org.springframework.data.cassandra.core.mapping.CassandraMappingContext;
 import org.springframework.data.cassandra.core.mapping.SimpleUserTypeResolver;
 import org.springframework.data.convert.CustomConversions;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +27,7 @@ import java.util.Set;
 @Configuration
 public class CassandraConfig {
 
-  private final List<Converter<?, ?>> converters;
+  private final ApplicationContext applicationContext;
 
   @Value("${spring.data.cassandra.keyspace-name}")
   private String KEYSPACE;
@@ -51,7 +53,9 @@ public class CassandraConfig {
 
   @Bean
   public CassandraCustomConversions customConversions() {
-    return new CassandraCustomConversions(converters);
+    return new CassandraCustomConversions(new ArrayList<>(
+            applicationContext.getBeansWithAnnotation(CassandraConverter.class).values()
+    ));
   }
 
   @Bean

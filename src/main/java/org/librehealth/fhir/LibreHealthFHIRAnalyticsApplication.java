@@ -50,7 +50,8 @@ public class LibreHealthFHIRAnalyticsApplication extends SpringBootServletInitia
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests().antMatchers("/css/**", "/Patient/**").permitAll().anyRequest()
+			http.authorizeRequests().antMatchers("/css/**", "/Patient/**", "/Encounter/**", "/Observation/**")
+					.permitAll().anyRequest()
 					.fullyAuthenticated().and().formLogin().loginPage("/login")
 					.failureUrl("/login?error").permitAll().and().logout().permitAll();
 			http.csrf().disable();
